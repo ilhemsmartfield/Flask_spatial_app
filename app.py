@@ -75,6 +75,7 @@ def calculate_ndvi():
             'success': True,
             'ndvi_stats': result['ndvi_stats'],
             'ndvi_image': result['ndvi_image'],
+            'bbox': result.get('bbox', None),  # Bounding box for map overlay
             'product_info': {
                 'date': end_date,
                 'cloud_cover': 'N/A',  # Sentinel Hub filters automatically

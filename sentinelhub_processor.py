@@ -267,12 +267,19 @@ def get_ndvi_from_sentinelhub(polygon_coords, start_date, end_date, config):
         # Create visualization
         image_base64 = create_ndvi_visualization(ndvi_array, f'NDVI - {end_date.strftime("%Y-%m-%d")}')
 
+        # Extract bbox coordinates for map overlay [min_lon, min_lat, max_lon, max_lat]
+        bbox_coords = [
+            [bbox.min_y, bbox.min_x],  # Southwest corner [lat, lon]
+            [bbox.max_y, bbox.max_x]   # Northeast corner [lat, lon]
+        ]
+
         return {
             'success': True,
             'ndvi_stats': stats,
             'ndvi_image': image_base64,
             'ndvi_array': ndvi_array,
-            'bbox_size': bbox_size
+            'bbox_size': bbox_size,
+            'bbox': bbox_coords  # For Leaflet imageOverlay
         }
 
     except Exception as e:

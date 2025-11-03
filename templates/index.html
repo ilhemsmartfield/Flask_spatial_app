@@ -240,6 +240,71 @@
         .instructions li {
             margin-bottom: 5px;
         }
+
+        /* Layer Controls (like Excel sheets) */
+        .layer-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 15px;
+        }
+
+        .layer-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .layer-tab {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .layer-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .layer-tab:hover {
+            background: #e0e0e0;
+        }
+
+        .layer-tab.active:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .opacity-control {
+            display: none;
+        }
+
+        .opacity-control.active {
+            display: block;
+        }
+
+        .opacity-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .opacity-slider {
+            width: 100%;
+        }
+
+        #ndviOverlay {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -251,6 +316,22 @@
     <div class="container">
         <div class="map-container">
             <div id="map"></div>
+
+            <!-- Layer Controls (like Excel Sheets) -->
+            <div class="layer-controls" id="layerControls" style="display: none;">
+                <div class="layer-tabs">
+                    <button class="layer-tab active" id="baseMapTab" onclick="switchLayer('base')">
+                        📍 Base Map
+                    </button>
+                    <button class="layer-tab" id="ndviTab" onclick="switchLayer('ndvi')">
+                        🌱 NDVI Layer
+                    </button>
+                </div>
+                <div class="opacity-control" id="opacityControl">
+                    <label for="opacitySlider">NDVI Opacity: <span id="opacityValue">70</span>%</label>
+                    <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="70">
+                </div>
+            </div>
         </div>
 
         <div class="sidebar">
@@ -346,6 +427,9 @@
         // Initialize drawing layer
         const drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
+
+        // NDVI overlay layer (initially null)
+        let ndviOverlayLayer = null;
 
         // Add drawing controls
         const drawControl = new L.Control.Draw({
@@ -466,13 +550,39 @@
                         document.getElementById('productInfoCard').style.display = 'block';
                     }
 
-                    // Display NDVI image
+                    // Display NDVI image in sidebar
                     const ndviImage = document.getElementById('ndviImage');
                     ndviImage.src = 'data:image/png;base64,' + data.ndvi_image;
                     ndviImage.style.display = 'block';
 
+                    // Create NDVI overlay on map
+                    if (data.bbox && data.bbox.length === 2) {
+                        // Remove existing overlay if present
+                        if (ndviOverlayLayer) {
+                            map.removeLayer(ndviOverlayLayer);
+                        }
+
+                        // Create new overlay with the NDVI image
+                        const imageUrl = 'data:image/png;base64,' + data.ndvi_image;
+                        const bounds = L.latLngBounds(data.bbox[0], data.bbox[1]);
+
+                        ndviOverlayLayer = L.imageOverlay(imageUrl, bounds, {
+                            opacity: 0.7,
+                            interactive: false
+                        });
+
+                        // Show layer controls
+                        document.getElementById('layerControls').style.display = 'block';
+
+                        // Automatically switch to NDVI layer
+                        switchLayer('ndvi');
+
+                        // Fit map to the NDVI bounds
+                        map.fitBounds(bounds);
+                    }
+
                     document.getElementById('results').style.display = 'block';
-                    showStatus('NDVI calculation completed successfully!', 'success');
+                    showStatus('NDVI calculation completed successfully! Use layer controls to toggle views.', 'success');
                 } else {
                     showStatus('Error: ' + (data.error || 'Unknown error occurred') +
                               (data.info ? '<br><small>' + data.info + '</small>' : ''), 'error');
@@ -488,6 +598,73 @@
             const statusDiv = document.getElementById('statusMessage');
             statusDiv.innerHTML = `<div class="alert alert-${type}" style="margin-top: 15px;">${message}</div>`;
         }
+
+        // Layer switching function (like Excel sheets)
+        function switchLayer(layer) {
+            const baseMapTab = document.getElementById('baseMapTab');
+            const ndviTab = document.getElementById('ndviTab');
+            const opacityControl = document.getElementById('opacityControl');
+
+            if (layer === 'base') {
+                // Show only base map
+                if (ndviOverlayLayer) {
+                    map.removeLayer(ndviOverlayLayer);
+                }
+
+                // Restore polygon fill on base map
+                drawnItems.eachLayer(function(layer) {
+                    if (layer.setStyle) {
+                        layer.setStyle({
+                            fillOpacity: 0.2,  // Restore fill
+                            color: '#3388ff',
+                            weight: 3
+                        });
+                    }
+                });
+
+                baseMapTab.classList.add('active');
+                ndviTab.classList.remove('active');
+                opacityControl.classList.remove('active');
+            } else if (layer === 'ndvi') {
+                // Show NDVI overlay
+                if (ndviOverlayLayer) {
+                    map.addLayer(ndviOverlayLayer);
+                }
+
+                // Make polygon transparent (only show border) on NDVI layer
+                drawnItems.eachLayer(function(layer) {
+                    if (layer.setStyle) {
+                        layer.setStyle({
+                            fillOpacity: 0,  // Transparent fill
+                            color: '#ff0000',  // Red border for visibility
+                            weight: 2,
+                            dashArray: '5, 5'  // Dotted line
+                        });
+                    }
+                });
+
+                baseMapTab.classList.remove('active');
+                ndviTab.classList.add('active');
+                opacityControl.classList.add('active');
+            }
+        }
+
+        // Opacity slider control
+        document.addEventListener('DOMContentLoaded', function() {
+            const opacitySlider = document.getElementById('opacitySlider');
+            const opacityValue = document.getElementById('opacityValue');
+
+            if (opacitySlider) {
+                opacitySlider.addEventListener('input', function() {
+                    const opacity = this.value / 100;
+                    opacityValue.textContent = this.value;
+
+                    if (ndviOverlayLayer) {
+                        ndviOverlayLayer.setOpacity(opacity);
+                    }
+                });
+            }
+        });
 
         // Check API health on load
         fetch('/api/health')
