@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Draw AOI and Get NDVI</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+  <style>
+    #map {
+      height: 90vh;
+      width: 100%;
+    }
+
+    #ndvi-image {
+      max-width: 100%;
+      margin-top: 10px;
+      display: block;
+    }
+
+    #legend {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    #legend img {
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    #legend p {
+      font-size: 14px;
+      color: #444;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>🛰️ Draw your AOI to generate NDVI</h3>
+  <div id="map"></div>
+  <img id="ndvi-image" />
+
+  <!-- 🌈 NDVI color legend -->
+  <div id="legend">
+    <img src="https://matplotlib.org/stable/_images/colormap_reference_005_0.png" alt="NDVI Legend">
+    <p>← Bare soil (low NDVI) — Vegetation (high NDVI) →</p>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+  <script>
+    const map = L.map('map').setView([36.7, 3.1], 10); // center around Algiers
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    const drawControl = new L.Control.Draw({
+      draw: { polygon: true, polyline: false, rectangle: false, circle: false, marker: false },
+      edit: { featureGroup: drawnItems }
+    });
+    map.addControl(drawControl);
+
+    map.on(L.Draw.Event.CREATED, async function (event) {
+      const layer = event.layer;
+      drawnItems.clearLayers();
+      drawnItems.addLayer(layer);
+
+      const geojson = layer.toGeoJSON();
+      const response = await fetch('/ndvi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(geojson.geometry)
+      });
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      document.getElementById('ndvi-image').src = url;
+    });
+  </script>
+</body>
+
+</html>
