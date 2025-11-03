@@ -1,0 +1,10 @@
+Flask==3.0.0
+sentinelhub>=3.10.0
+numpy>=1.24.0
+matplotlib>=3.8.0
+shapely>=2.0.0
+Pillow>=10.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+tifffile>=2023.0.0
+# Note: sentinelhub library is much more reliable than sentinelsat
