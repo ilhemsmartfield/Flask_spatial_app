@@ -14,7 +14,12 @@ from sentinelhub import (
 )
 from datetime import datetime, timedelta
 import numpy as np
+
+# Use non-GUI backend for matplotlib (fixes threading issues in Flask)
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 import io
 import base64
 
@@ -184,7 +189,11 @@ def create_ndvi_visualization(ndvi_array, title='NDVI Visualization'):
     plt.savefig(buf, format='png', bbox_inches='tight', dpi=150, facecolor='white')
     buf.seek(0)
     image_base64 = base64.b64encode(buf.read()).decode('utf-8')
-    plt.close()
+
+    # Clean up to prevent memory leaks
+    buf.close()
+    plt.close(fig)
+    plt.close('all')  # Close all figures to be safe
 
     return image_base64
 

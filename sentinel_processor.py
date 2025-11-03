@@ -7,7 +7,12 @@ import os
 import zipfile
 import numpy as np
 from shapely.geometry import shape
+
+# Use non-GUI backend for matplotlib (fixes threading issues in Flask)
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 import io
 import base64
 
