@@ -332,3 +332,152 @@ body {
 #ndviOverlay {
     display: none;
 }
+
+/* Floating Stats Card on Map */
+.map-stats-card {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 0;
+    min-width: 200px;
+    max-width: 250px;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.stats-header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stats-close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.stats-close-btn:hover {
+    opacity: 1;
+}
+
+.stats-content {
+    padding: 12px 15px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+}
+
+.stat-row .stat-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.stat-row .stat-value {
+    color: #333;
+    font-weight: 600;
+}
+
+.stats-divider {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 8px 0;
+}
+
+/* NDVI Legend Card */
+.map-legend-card {
+    position: absolute;
+    bottom: 120px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px 15px;
+    min-width: 180px;
+}
+
+.map-legend-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.legend-gradient {
+    height: 20px;
+    background: linear-gradient(to right, #d73027, #fee08b, #1a9850);
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+.legend-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.legend-info {
+    font-size: 10px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.legend-info div {
+    margin-bottom: 3px;
+}
+
+/* Hover Info Card */
+.map-hover-card {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 10px 15px;
+    pointer-events: none;
+}
+
+.hover-ndvi-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.hover-coords {
+    font-size: 10px;
+    color: #666;
+    font-family: monospace;
+}

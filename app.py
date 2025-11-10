@@ -79,7 +79,10 @@ def calculate_ndvi():
             'success': True,
             'ndvi_stats': result['ndvi_stats'],
             'ndvi_image': result['ndvi_image'],
+            'ndvi_overlay': result['ndvi_overlay'],  # Clean overlay for map (no legend)
+            'ndvi_array': result['ndvi_array'],  # For hover functionality
             'bbox': result.get('bbox', None),  # Bounding box for map overlay
+            'bbox_size': result['bbox_size'],  # Image dimensions
             'product_info': {
                 'date': end_date,
                 'cloud_cover': 'N/A',  # Sentinel Hub filters automatically
@@ -142,9 +145,9 @@ if __name__ == '__main__':
     print("=" * 60)
     print("Flask NDVI Calculator with Sentinel Hub")
     print("=" * 60)
-    print(f"Instance ID: {'✓ Configured' if SENTINEL_INSTANCE_ID else '✗ Missing'}")
-    print(f"Client ID: {'✓ Configured' if SENTINEL_CLIENT_ID else '✗ Missing'}")
-    print(f"Client Secret: {'✓ Configured' if SENTINEL_CLIENT_SECRET else '✗ Missing'}")
+    print(f"Instance ID: {'OK' if SENTINEL_INSTANCE_ID else 'MISSING'}")
+    print(f"Client ID: {'OK' if SENTINEL_CLIENT_ID else 'MISSING'}")
+    print(f"Client Secret: {'OK' if SENTINEL_CLIENT_SECRET else 'MISSING'}")
     print("=" * 60)
     print("Starting server at http://localhost:5000")
     print("=" * 60)

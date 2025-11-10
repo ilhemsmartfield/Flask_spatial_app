@@ -53,6 +53,60 @@
                     <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="85">
                 </div>
             </div>
+
+            <!-- Floating Stats Card on Map -->
+            <div class="map-stats-card" id="mapStatsCard" style="display: none;">
+                <div class="stats-header">
+                    <h4>📊 NDVI Statistics</h4>
+                    <button class="stats-close-btn" onclick="toggleStatsCard()">✕</button>
+                </div>
+                <div class="stats-content">
+                    <div class="stat-row">
+                        <span class="stat-label">Mean:</span>
+                        <span class="stat-value" id="meanNdvi">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Min:</span>
+                        <span class="stat-value" id="minNdvi">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Max:</span>
+                        <span class="stat-value" id="maxNdvi">-</span>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stat-row">
+                        <span class="stat-label">📅 Date:</span>
+                        <span class="stat-value" id="imageDate">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">📐 Resolution:</span>
+                        <span class="stat-value" id="resolution">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NDVI Legend Card -->
+            <div class="map-legend-card" id="mapLegendCard" style="display: none;">
+                <h4>🌱 NDVI Scale</h4>
+                <div class="legend-gradient"></div>
+                <div class="legend-labels">
+                    <span>-1.0</span>
+                    <span>0.0</span>
+                    <span>1.0</span>
+                </div>
+                <div class="legend-info">
+                    <div>🟢 0.6-1.0: Dense vegetation</div>
+                    <div>🟡 0.2-0.6: Moderate vegetation</div>
+                    <div>🟠 0.0-0.2: Sparse vegetation</div>
+                    <div>🔴 &lt;0.0: Water/Snow</div>
+                </div>
+            </div>
+
+            <!-- Hover Info Card -->
+            <div class="map-hover-card" id="mapHoverCard" style="display: none;">
+                <div class="hover-ndvi-value" id="hoverNdvi">-</div>
+                <div class="hover-coords" id="hoverCoords">-</div>
+            </div>
         </div>
 
         <div class="sidebar">
@@ -62,7 +116,7 @@
                     <li>Use the polygon tool to draw a zone</li>
                     <li>Select the date range</li>
                     <li>Click "Calculate NDVI"</li>
-                    <li>View the results below</li>
+                    <li>View results on the map</li>
                 </ol>
             </div>
 
@@ -85,78 +139,6 @@
 
                 <div id="statusMessage"></div>
             </div>
-
-            <div class="results" id="results" style="display: none;">
-                <h3 style="margin-bottom: 15px; color: #333;">Results</h3>
-
-                <div class="result-card">
-                    <h4>NDVI Statistics</h4>
-                    <div class="stat-item">
-                        <span class="stat-label">Mean NDVI:</span>
-                        <span class="stat-value" id="meanNdvi">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Min NDVI:</span>
-                        <span class="stat-value" id="minNdvi">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Max NDVI:</span>
-                        <span class="stat-value" id="maxNdvi">-</span>
-                    </div>
-                </div>
-
-                <div class="result-card" id="productInfoCard" style="display: none;">
-                    <h4>Satellite Image Info</h4>
-                    <div class="stat-item">
-                        <span class="stat-label">Date:</span>
-                        <span class="stat-value" id="imageDate">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Cloud Cover:</span>
-                        <span class="stat-value" id="cloudCover">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Resolution:</span>
-                        <span class="stat-value" id="resolution">-</span>
-                    </div>
-                </div>
-
-                <div class="result-card">
-                    <h4>NDVI Visualization</h4>
-                    <img id="ndviImage" src="" alt="NDVI Visualization" style="display: none;" />
-                </div>
-
-                <div class="result-card" id="ndviLegendCard" style="display: none;">
-                    <h4>NDVI Color Scale</h4>
-                    <div style="margin-top: 10px;">
-                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                            <div
-                                style="width: 30px; height: 20px; background: linear-gradient(to right, #d73027, #fee08b, #1a9850); border: 1px solid #ccc; margin-right: 10px;">
-                            </div>
-                            <span style="font-size: 12px;">-1.0 to 1.0</span>
-                        </div>
-                        <div style="font-size: 11px; color: #666; line-height: 1.6;">
-                            <strong>Legend:</strong><br>
-                            🟢 0.6 - 1.0: Dense vegetation<br>
-                            🟡 0.2 - 0.6: Moderate vegetation<br>
-                            🟠 0.0 - 0.2: Sparse vegetation<br>
-                            🔴 &lt; 0.0: Water/Snow
-                        </div>
-                    </div>
-                </div>
-
-                <div class="result-card" id="hoverInfoCard" style="display: none;">
-                    <h4>Hover Info</h4>
-                    <div class="stat-item">
-                        <span class="stat-label">NDVI Value:</span>
-                        <span class="stat-value" id="hoverNdvi">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Location:</span>
-                        <span class="stat-value" id="hoverCoords" style="font-size: 11px;">-</span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -173,17 +155,33 @@
         // Define base layers
         const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19
+            maxZoom: 19,
+            errorTileUrl: '',  // Avoid showing broken tile images
         });
 
         const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-            maxZoom: 19
+            maxZoom: 19,
+            errorTileUrl: '',  // Avoid showing broken tile images
+        });
+
+        // Log tile loading errors
+        streetLayer.on('tileerror', function(error, tile) {
+            console.error('Street tile loading error:', error);
+        });
+
+        satelliteLayer.on('tileerror', function(error, tile) {
+            console.error('Satellite tile loading error:', error);
         });
 
         // Add default layer (street map)
         let currentBaseLayer = streetLayer;
         currentBaseLayer.addTo(map);
+
+        // Fix map size after page load (ensures tiles load properly)
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 100);
 
         // Initialize drawing layer
         const drawnItems = new L.FeatureGroup();
@@ -257,8 +255,9 @@
         map.on(L.Draw.Event.DELETED, function (event) {
             currentPolygon = null;
             document.getElementById('calculateBtn').disabled = true;
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('hoverInfoCard').style.display = 'none';
+            document.getElementById('mapStatsCard').style.display = 'none';
+            document.getElementById('mapLegendCard').style.display = 'none';
+            document.getElementById('mapHoverCard').style.display = 'none';
             document.getElementById('layerControls').style.display = 'none';
 
             // Clear NDVI data
@@ -287,7 +286,6 @@
             // Disable button and show loading
             document.getElementById('calculateBtn').disabled = true;
             showStatus('<div class="spinner"></div><p style="margin-top: 10px;">Processing... This may take a few minutes.</p>', 'info');
-            document.getElementById('results').style.display = 'none';
 
             try {
                 const response = await fetch('/api/calculate-ndvi', {
@@ -305,37 +303,21 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Display results
+                    // Update stats in floating card
                     document.getElementById('meanNdvi').textContent = data.ndvi_stats.mean.toFixed(3);
                     document.getElementById('minNdvi').textContent = data.ndvi_stats.min.toFixed(3);
                     document.getElementById('maxNdvi').textContent = data.ndvi_stats.max.toFixed(3);
 
                     if (data.product_info) {
                         document.getElementById('imageDate').textContent = new Date(data.product_info.date).toLocaleDateString();
-
-                        // Handle cloud_cover - it might be a number or string (like 'N/A')
-                        const cloudCover = data.product_info.cloud_cover;
-                        if (typeof cloudCover === 'number') {
-                            document.getElementById('cloudCover').textContent = cloudCover.toFixed(1) + '%';
-                        } else {
-                            document.getElementById('cloudCover').textContent = cloudCover;
-                        }
-
-                        // Display resolution if available
-                        if (data.product_info.resolution) {
-                            document.getElementById('resolution').textContent = data.product_info.resolution;
-                        }
-
-                        document.getElementById('productInfoCard').style.display = 'block';
+                        document.getElementById('resolution').textContent = data.product_info.resolution || '-';
                     }
 
-                    // Display NDVI image in sidebar (with legend and colorbar)
-                    const ndviImage = document.getElementById('ndviImage');
-                    ndviImage.src = 'data:image/png;base64,' + data.ndvi_image;
-                    ndviImage.style.display = 'block';
+                    // Show floating stats card on map
+                    document.getElementById('mapStatsCard').style.display = 'block';
 
-                    // Show NDVI legend card
-                    document.getElementById('ndviLegendCard').style.display = 'block';
+                    // Show legend card
+                    document.getElementById('mapLegendCard').style.display = 'block';
 
                     // Create NDVI overlay on map
                     if (data.bbox && data.bbox.length === 2) {
@@ -367,7 +349,6 @@
                         map.fitBounds(bounds);
                     }
 
-                    document.getElementById('results').style.display = 'block';
                     showStatus('NDVI calculation completed successfully! Hover over the map to see values.', 'success');
                 } else {
                     showStatus('Error: ' + (data.error || 'Unknown error occurred') +
@@ -423,7 +404,7 @@
                 }
 
                 // Hide hover info when on base layer
-                document.getElementById('hoverInfoCard').style.display = 'none';
+                document.getElementById('mapHoverCard').style.display = 'none';
 
                 // Restore polygon fill on base map
                 drawnItems.eachLayer(function (layer) {
@@ -489,7 +470,7 @@
 
             // Check if mouse is within NDVI bounds
             if (!ndviBounds.contains(e.latlng)) {
-                document.getElementById('hoverInfoCard').style.display = 'none';
+                document.getElementById('mapHoverCard').style.display = 'none';
                 return;
             }
 
@@ -521,15 +502,25 @@
 
                 // Only show if valid NDVI value
                 if (ndviValue >= -1 && ndviValue <= 1 && ndviValue !== -999) {
-                    document.getElementById('hoverInfoCard').style.display = 'block';
+                    document.getElementById('mapHoverCard').style.display = 'block';
                     document.getElementById('hoverNdvi').textContent = ndviValue.toFixed(3);
                     document.getElementById('hoverCoords').textContent =
                         `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
                 } else {
-                    document.getElementById('hoverInfoCard').style.display = 'none';
+                    document.getElementById('mapHoverCard').style.display = 'none';
                 }
             }
         });
+
+        // Toggle stats card visibility
+        function toggleStatsCard() {
+            const statsCard = document.getElementById('mapStatsCard');
+            if (statsCard.style.display === 'none') {
+                statsCard.style.display = 'block';
+            } else {
+                statsCard.style.display = 'none';
+            }
+        }
 
         // Check API health on load
         fetch('/api/health')

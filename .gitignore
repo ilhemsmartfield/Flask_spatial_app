@@ -48,3 +48,5 @@ Thumbs.db
 
 # Logs
 *.log
+nul
+console.png map.png map1.png processing.png satmap.png streetmap.png
