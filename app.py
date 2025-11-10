@@ -4,7 +4,6 @@ import numpy as np
 import json
 import os
 
-# Use non-GUI backend for matplotlib (fixes threading issues in Flask)
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

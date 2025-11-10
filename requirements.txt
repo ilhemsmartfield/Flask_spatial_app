@@ -7,4 +7,3 @@ Pillow>=10.0.0
 requests>=2.31.0
 python-dotenv>=1.0.0
 tifffile>=2023.0.0
-# Note: sentinelhub library is much more reliable than sentinelsat

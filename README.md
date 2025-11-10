@@ -1,10 +1,10 @@
 # Flask NDVI Calculator with Sentinel-2
 
-A Flask web application for calculating NDVI (Normalized Difference Vegetation Index) from Sentinel-2 satellite imagery. Users can draw polygons on an interactive map to define zones of interest, and the application will download Sentinel-2 data and calculate vegetation indices.
+A Flask web application for calculating multiple crop indexes like the NDVI (Normalized Difference Vegetation Index) from Sentinel-2 satellite imagery. Users can draw polygons on an interactive map to define zones of interest, and the application will download Sentinel-2 data and calculate vegetation indices.
 
 ## Features
 
-- Interactive Leaflet map with drawing tools
+- Interactive Leaflet map with satellite images and drawing tools
 - Draw custom polygons to define areas of interest
 - Integration with Sentinel-2 satellite data via SentinelSat API
 - Automatic NDVI calculation from NIR and Red bands
@@ -34,8 +34,10 @@ pip install -r requirements.txt
 
 4. Create a `.env` file in the project root with your credentials:
 ```bash
-SENTINEL_USER=your_username
-SENTINEL_PASSWORD=your_password
+SENTINEL_INSTANCE_ID=your_instance_id_here
+SENTINEL_CLIENT_ID=your_client_id_here
+SENTINEL_CLIENT_SECRET=your_client_secret_here
+
 ```
 
 ## Usage
