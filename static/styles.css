@@ -218,35 +218,218 @@ body {
    ======================================== */
 
 .field-info-bar {
-    background: var(--field-bar-bg);
+    background: var(--bg-secondary);
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     padding: 0 30px;
     height: 60px;
     min-height: 60px;
-    border-bottom: 2px solid var(--border-dark);
-    box-shadow: 0 2px 8px var(--overlay-shadow);
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 1px 4px var(--overlay-shadow);
+    gap: 30px;
 }
 
-.field-info-item {
+/* Welcome Message */
+.welcome-message {
+    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-right: 40px;
+}
+
+/* Field Info Section */
+.field-info-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+/* Field Badge */
+.field-badge {
     display: flex;
     align-items: center;
     gap: 10px;
+    background: var(--bg-primary);
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-medium);
 }
 
-.field-label {
-    color: var(--field-label);
-    font-size: 11px;
+.field-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%);
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.field-icon.small {
+    width: 20px;
+    height: 20px;
+}
+
+.field-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.field-name {
+    color: var(--text-primary);
+    font-size: 13px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    line-height: 1;
 }
 
-.field-value {
-    color: var(--field-value);
-    font-size: 15px;
-    font-weight: 700;
+.field-location-small {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* Field Area Badge */
+.field-area-badge {
+    background: var(--accent-primary);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Edit Button */
+.edit-field-btn {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.edit-field-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-secondary);
+    color: var(--accent-primary);
+}
+
+.edit-field-btn.editing {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+    color: white;
+}
+
+.edit-field-btn.save-edit {
+    background: var(--status-success);
+    border-color: var(--status-success);
+    color: white;
+}
+
+.edit-field-btn.save-edit:hover {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+}
+
+/* Field Selector */
+.field-selector {
+    position: relative;
+    margin-left: auto;
+}
+
+.field-selector-btn {
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.field-selector-btn:hover {
+    background: var(--accent-secondary);
+}
+
+.dropdown-arrow {
+    transition: transform 0.2s ease;
+}
+
+.field-selector.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Field Dropdown */
+.field-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 2px solid var(--border-medium);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px var(--overlay-shadow);
+    min-width: 280px;
+    z-index: 1000;
+    display: none;
+}
+
+.field-dropdown.show {
+    display: block;
+}
+
+.field-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.field-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.field-dropdown-item:hover {
+    background: var(--bg-hover);
+}
+
+.field-dropdown-item.active {
+    background: var(--bg-primary);
+}
+
+.field-dropdown-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dropdown-field-name {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.dropdown-field-info {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
 }
 
 /* ========================================
@@ -280,60 +463,268 @@ body {
     z-index: 1;
 }
 
-/* Map Overlay - Bottom Left (Navigation) */
-.map-overlay-left {
+/* Bottom Left Controls */
+.map-controls-left {
     position: absolute;
     bottom: 24px;
     left: 24px;
     z-index: 999;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.control-item {
     background: var(--overlay-bg);
     border: 2px solid var(--overlay-border);
     border-radius: 10px;
-    padding: 14px 18px;
-    box-shadow: 0 4px 16px var(--overlay-shadow);
-    min-width: 220px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px var(--overlay-shadow);
     backdrop-filter: blur(10px);
 }
 
-.map-overlay-left .overlay-title {
-    color: var(--text-primary);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    letter-spacing: 1.2px;
-    border-bottom: 2px solid var(--border-medium);
-    padding-bottom: 6px;
+.control-item:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--overlay-shadow);
 }
 
-/* Map Overlay - Bottom Right (Map Tools) */
-.map-overlay-right {
+.control-item.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+.control-item svg {
+    color: var(--accent-primary);
+    transition: all 0.2s ease;
+}
+
+.control-item.active svg {
+    color: white;
+}
+
+.control-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.control-item.active .control-label {
+    color: white;
+}
+
+.date-display {
+    background: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
+    cursor: default !important;
+}
+
+.date-display:hover {
+    transform: none !important;
+}
+
+.date-display #dateLabel {
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Calendar Panel */
+.calendar-panel {
+    position: absolute;
+    bottom: 80px;
+    left: 24px;
+    z-index: 1000;
+    background: white;
+    border: 2px solid var(--border-dark);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 20px var(--overlay-shadow);
+    min-width: 280px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-medium);
+}
+
+.calendar-header h4 {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.close-calendar {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-calendar:hover {
+    color: var(--accent-primary);
+}
+
+.calendar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.date-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.date-input-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.date-input-group input[type="date"] {
+    padding: 10px 12px;
+    border: 2px solid var(--border-medium);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.date-input-group input[type="date"]:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(40, 54, 24, 0.1);
+}
+
+/* Bottom Right Controls */
+.map-controls-right {
     position: absolute;
     bottom: 24px;
     right: 24px;
     z-index: 999;
+    min-width: 300px;
+}
+
+/* Index Selector */
+.index-selector {
     background: var(--overlay-bg);
     border: 2px solid var(--overlay-border);
     border-radius: 10px;
-    padding: 14px 18px;
-    box-shadow: 0 4px 16px var(--overlay-shadow);
-    min-width: 220px;
+    box-shadow: 0 2px 12px var(--overlay-shadow);
     backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
-.map-overlay-right .overlay-title {
-    color: var(--text-primary);
-    font-size: 10px;
+.index-selector.expanded {
+    box-shadow: 0 4px 20px var(--overlay-shadow);
+}
+
+.index-selector-header {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.index-selector-header:hover {
+    background: var(--bg-hover);
+}
+
+.index-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.index-name {
+    font-size: 14px;
     font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    letter-spacing: 1.2px;
-    border-bottom: 2px solid var(--border-medium);
-    padding-bottom: 6px;
+    color: var(--accent-primary);
+    letter-spacing: 0.5px;
 }
 
-.map-tools-content {
-    margin-top: 10px;
+.index-description {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.dropdown-arrow {
+    color: var(--accent-primary);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* Index Dropdown */
+.index-dropdown {
+    border-top: 2px solid var(--border-medium);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.index-option {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.index-option:last-child {
+    border-bottom: none;
+}
+
+.index-option:hover {
+    background: var(--bg-hover);
+}
+
+.index-option.active {
+    background: var(--bg-primary);
+    border-left: 3px solid var(--accent-primary);
+}
+
+.index-option-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    letter-spacing: 0.5px;
+}
+
+.index-option-desc {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 /* Layer Controls in Map Tools */
@@ -374,8 +765,8 @@ body {
     border-color: var(--accent-secondary);
 }
 
-/* Calculate Button in Map Overlay */
-.map-overlay-right .btn-calculate {
+/* Calculate Button */
+.btn-calculate {
     width: 100%;
     padding: 12px;
     background: var(--btn-primary-bg);
@@ -388,16 +779,18 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.8px;
     transition: all 0.2s ease;
-    margin-top: 12px;
     box-shadow: 0 2px 8px var(--btn-hover-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.map-overlay-right .btn-calculate:hover:not(:disabled) {
+.btn-calculate:hover:not(:disabled) {
     background: var(--btn-primary-hover);
     box-shadow: 0 3px 12px var(--btn-hover-shadow);
 }
 
-.map-overlay-right .btn-calculate:disabled {
+.btn-calculate:disabled {
     background: var(--bg-tertiary);
     color: var(--text-muted);
     cursor: not-allowed;
@@ -405,33 +798,80 @@ body {
     opacity: 0.5;
 }
 
+/* Coordinates Tooltip on Polygon */
+.coordinates-tooltip {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.coordinates-tooltip::before {
+    display: none !important;
+}
+
+.leaflet-tooltip.coordinates-tooltip {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #ff6b35 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: 0.5px !important;
+    text-align: center !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
+    text-shadow:
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff,
+        0 0 4px rgba(255, 255, 255, 0.8) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.leaflet-tooltip.coordinates-tooltip:hover {
+    color: #ff8c42 !important;
+    transform: scale(1.05) !important;
+}
+
 /* Hover Info Card */
 .map-hover-card {
     position: absolute;
-    top: 24px;
+    top: 70px;
     right: 24px;
     z-index: 1000;
     background: var(--overlay-bg);
     border: 2px solid var(--overlay-border);
     border-radius: 10px;
-    box-shadow: 0 4px 16px var(--overlay-shadow);
-    padding: 14px 18px;
+    box-shadow: 0 6px 20px var(--overlay-shadow);
+    padding: 16px 20px;
     pointer-events: none;
     backdrop-filter: blur(10px);
+    min-width: 180px;
+    transition: all 0.15s ease;
 }
 
 .hover-ndvi-value {
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 800;
-    color: var(--status-success);
-    margin-bottom: 6px;
+    color: var(--accent-primary);
+    margin-bottom: 4px;
+    line-height: 1;
+    text-align: center;
 }
 
 .hover-coords {
     font-size: 10px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-family: 'Courier New', monospace;
     font-weight: 600;
+    text-align: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-medium);
 }
 
 /* ========================================
@@ -578,19 +1018,25 @@ body {
 
 /* Geocoder Search Bar */
 .leaflet-control-geocoder {
-    background: var(--overlay-bg) !important;
+    background: white !important;
     border-radius: 8px !important;
-    box-shadow: 0 4px 16px var(--overlay-shadow) !important;
-    border: 2px solid var(--border-medium) !important;
-    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 2px solid var(--border-dark) !important;
+    margin-bottom: 20px !important;
+}
+
+.leaflet-control-geocoder-form {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .leaflet-control-geocoder-form input {
     width: 260px !important;
-    padding: 12px 16px !important;
-    border: 2px solid var(--border-medium) !important;
+    padding: 12px 16px 12px 50px !important;
+    border: none !important;
     border-radius: 6px !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
     background: white !important;
     color: var(--text-primary) !important;
     font-weight: 500 !important;
@@ -598,29 +1044,50 @@ body {
 
 .leaflet-control-geocoder-form input:focus {
     outline: none !important;
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(40, 54, 24, 0.1) !important;
+    box-shadow: none !important;
 }
 
 .leaflet-control-geocoder-form input::placeholder {
     color: var(--text-muted) !important;
+    font-size: 12px !important;
 }
 
-.leaflet-control-geocoder-form button {
-    background: var(--accent-primary) !important;
+.leaflet-control-geocoder-icon {
+    position: absolute !important;
+    left: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    height: 20px !important;
+    background-color: var(--accent-primary) !important;
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat center !important;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat center !important;
+    -webkit-mask-size: contain !important;
+    mask-size: contain !important;
     border: none !important;
-    border-radius: 6px !important;
-    transition: all 0.2s ease !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    z-index: 10 !important;
 }
 
-.leaflet-control-geocoder-form button:hover {
-    background: var(--accent-secondary) !important;
+.leaflet-control-geocoder-icon svg {
+    display: none !important;
+}
+
+/* Make the form wrapper position relative for icon positioning */
+.leaflet-control-geocoder {
+    position: relative !important;
+}
+
+.leaflet-bar {
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .leaflet-control-geocoder-alternatives {
     background: white !important;
     border-radius: 8px !important;
-    box-shadow: 0 4px 16px var(--overlay-shadow) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
     margin-top: 10px !important;
     border: 2px solid var(--border-color) !important;
 }
@@ -641,27 +1108,29 @@ body {
 
 /* Zoom Control */
 .leaflet-control-zoom {
-    background: var(--overlay-bg) !important;
-    border: 2px solid var(--border-medium) !important;
+    background: white !important;
+    border: 2px solid var(--border-dark) !important;
     border-radius: 8px !important;
-    backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px var(--overlay-shadow) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
 }
 
 .leaflet-control-zoom a {
     background: white !important;
     color: var(--accent-primary) !important;
-    border-bottom: 2px solid var(--border-color) !important;
-    width: 36px !important;
-    height: 36px !important;
-    line-height: 36px !important;
-    font-weight: 700 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    font-weight: 800 !important;
+    font-size: 24px !important;
     transition: all 0.2s ease !important;
+    text-shadow: none !important;
 }
 
 .leaflet-control-zoom a:hover {
     background: var(--bg-hover) !important;
-    color: var(--accent-secondary) !important;
+    color: var(--accent-primary) !important;
 }
 
 .leaflet-control-zoom a:first-child {
@@ -673,23 +1142,207 @@ body {
     border-bottom: none !important;
 }
 
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    color: var(--accent-primary) !important;
+}
+
+.leaflet-control-zoom-in span,
+.leaflet-control-zoom-out span {
+    color: var(--accent-primary) !important;
+}
+
 /* Draw Controls */
+.leaflet-draw {
+    margin-top: 60px !important;
+}
+
 .leaflet-draw-toolbar {
-    background: var(--overlay-bg) !important;
-    border: 2px solid var(--border-medium) !important;
+    background: white !important;
+    border: 2px solid var(--border-dark) !important;
     border-radius: 8px !important;
-    backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px var(--overlay-shadow) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
 }
 
 .leaflet-draw-toolbar a {
-    background: white !important;
-    border-bottom: 2px solid var(--border-color) !important;
+    background-color: white !important;
+    border-bottom: 1px solid var(--border-color) !important;
     transition: all 0.2s ease !important;
+    width: 40px !important;
+    height: 40px !important;
+    background-position: center !important;
+    background-size: 20px 20px !important;
+    background-repeat: no-repeat !important;
 }
 
 .leaflet-draw-toolbar a:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+.leaflet-draw-toolbar a:last-child {
+    border-bottom: none !important;
+}
+
+/* Remove default sprite sheet first */
+.leaflet-draw-toolbar a {
+    background-image: none !important;
+}
+
+/* Draw tool icons - make them green with more specific selectors */
+.leaflet-draw-toolbar a.leaflet-draw-draw-polygon {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23283618" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolygon points="12 3 20 9 17 19 7 19 4 9"/%3E%3C/svg%3E') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 22px 22px !important;
+    background-color: white !important;
+}
+
+.leaflet-draw-toolbar a.leaflet-draw-edit-remove {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23283618" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M3 6 L21 6"/%3E%3Cpath d="M8 6 L8 4 C8 2.9 8.9 2 10 2 L14 2 C15.1 2 16 2.9 16 4 L16 6"/%3E%3Cpath d="M19 6 L19 20 C19 21.1 18.1 22 17 22 L7 22 C5.9 22 5 21.1 5 20 L5 6"/%3E%3Cpath d="M10 11 L10 17"/%3E%3Cpath d="M14 11 L14 17"/%3E%3C/svg%3E') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 20px 20px !important;
+    background-color: white !important;
+}
+
+.leaflet-draw-actions {
+    background: white !important;
+    border: 2px solid var(--border-dark) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-draw-actions a {
+    background: white !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+.leaflet-draw-actions a:hover {
     background: var(--bg-hover) !important;
+}
+
+.leaflet-draw-actions li:last-child a {
+    border-bottom: none !important;
+}
+
+/* Active/enabled draw tools */
+.leaflet-draw-toolbar .leaflet-draw-draw-polygon.leaflet-disabled {
+    opacity: 0.4 !important;
+}
+
+.leaflet-draw-toolbar .leaflet-draw-draw-rectangle.leaflet-disabled {
+    opacity: 0.4 !important;
+}
+
+.leaflet-draw-toolbar a.leaflet-disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+/* Drawing tooltip */
+.leaflet-draw-tooltip {
+    background: white !important;
+    border: 2px solid var(--border-dark) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    color: var(--text-primary) !important;
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+}
+
+.leaflet-draw-tooltip-single {
+    color: var(--text-primary) !important;
+}
+
+.leaflet-draw-tooltip-subtext {
+    color: var(--text-secondary) !important;
+}
+
+/* Make the first/last marker more prominent for easier closing */
+.leaflet-marker-icon.leaflet-div-icon.leaflet-editing-icon {
+    width: 14px !important;
+    height: 14px !important;
+    margin-left: -7px !important;
+    margin-top: -7px !important;
+}
+
+.leaflet-marker-icon.leaflet-div-icon.leaflet-editing-icon.leaflet-edit-marker-selected {
+    background-color: var(--accent-primary) !important;
+    border: 3px solid white !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: -9px !important;
+    margin-top: -9px !important;
+}
+
+/* Drawing vertices */
+.leaflet-draw-guide-dash {
+    stroke-dasharray: 5, 10 !important;
+    pointer-events: none !important;
+}
+
+/* Hide drawing guides when not actively drawing */
+.leaflet-draw-section .leaflet-draw-guide-dash {
+    display: none !important;
+}
+
+/* Only show guides when actively in drawing mode */
+.leaflet-draw-section.leaflet-draw-toolbar-notop .leaflet-draw-guide-dash {
+    display: block !important;
+}
+
+/* First point marker - make it bigger */
+.leaflet-marker-icon.leaflet-div-icon.leaflet-editing-icon:first-of-type {
+    width: 16px !important;
+    height: 16px !important;
+    margin-left: -8px !important;
+    margin-top: -8px !important;
+    background-color: var(--accent-primary) !important;
+    border: 3px solid white !important;
+    box-shadow: 0 0 0 2px var(--accent-primary) !important;
+}
+
+/* Split View Control */
+.split-view-control {
+    background: white !important;
+    border: 2px solid var(--border-dark) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    margin-top: 12px !important;
+}
+
+.split-view-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: white !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+}
+
+.split-view-button:hover {
+    background: var(--bg-hover) !important;
+}
+
+.split-view-button.active {
+    background: var(--accent-primary) !important;
+}
+
+.split-view-button.active svg {
+    stroke: white !important;
+}
+
+.split-view-button svg {
+    pointer-events: none !important;
 }
 
 /* Leaflet Popup */

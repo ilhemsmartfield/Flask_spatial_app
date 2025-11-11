@@ -86,23 +86,62 @@
         <!-- Main Content Grid -->
         <div class="main-grid">
 
-            <!-- Green Bar - Field Information -->
+            <!-- Top Bar - Field Information -->
             <div class="field-info-bar">
-                <div class="field-info-item">
-                    <span class="field-label">Field Name:</span>
-                    <span class="field-value" id="fieldName">Field #1</span>
+                <!-- Welcome Message -->
+                <div class="welcome-message">
+                    Welcome back, Morsli. Let's see what's sprouting 🌱
                 </div>
-                <div class="field-info-item">
-                    <span class="field-label">Area:</span>
-                    <span class="field-value" id="fieldArea">-- ha</span>
+
+                <!-- Field Info Section -->
+                <div class="field-info-section">
+                    <!-- Field Name with Icon -->
+                    <div class="field-badge">
+                        <div class="field-icon"></div>
+                        <div class="field-details">
+                            <span class="field-name" id="fieldName">Mozzaia</span>
+                            <span class="field-location-small" id="fieldLocationSmall">Agrumes</span>
+                        </div>
+                    </div>
+
+                    <!-- Field Area -->
+                    <div class="field-area-badge">
+                        <span class="area-value" id="fieldArea">4.6 ha</span>
+                    </div>
+
+                    <!-- Edit Icon -->
+                    <button class="edit-field-btn" id="editFieldBtn" title="Edit field polygon" onclick="enableEditMode()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
                 </div>
-                <div class="field-info-item">
-                    <span class="field-label">Location:</span>
-                    <span class="field-value" id="fieldLocation">--°N, --°E</span>
-                </div>
-                <div class="field-info-item">
-                    <span class="field-label">Crop Type:</span>
-                    <span class="field-value" id="cropType">Not specified</span>
+
+                <!-- Field Selector Dropdown -->
+                <div class="field-selector">
+                    <button class="field-selector-btn" onclick="toggleFieldDropdown()">
+                        <span>Tous les champs</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-arrow">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="field-dropdown" id="fieldDropdown">
+                        <div class="field-dropdown-item active" onclick="selectField('Mozzaia', 'Agrumes', '4.6')">
+                            <div class="field-icon small"></div>
+                            <div class="field-dropdown-details">
+                                <span class="dropdown-field-name">Mozzaia</span>
+                                <span class="dropdown-field-info">Agrumes • 4.6 ha</span>
+                            </div>
+                        </div>
+                        <div class="field-dropdown-item" onclick="selectField('Ain oussara', 'Wheat', '8.2')">
+                            <div class="field-icon small"></div>
+                            <div class="field-dropdown-details">
+                                <span class="dropdown-field-name">Ain oussara</span>
+                                <span class="dropdown-field-info">Wheat • 8.2 ha</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -113,61 +152,106 @@
             <div class="map-section">
                 <div id="map"></div>
 
-                <!-- Map Overlay - Bottom Left (Search + Zoom) -->
-                <div class="map-overlay-left">
-                    <div class="overlay-title">Navigation</div>
-                    <!-- Search and zoom controls will be positioned here via JS -->
+                <!-- Bottom Left Controls -->
+                <div class="map-controls-left">
+                    <!-- Base Layer Toggle (Satellite/Street) -->
+                    <div class="control-item" id="baseLayerToggle" onclick="toggleBaseLayer()" title="Toggle Map View">
+                        <svg id="layerToggleIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                        <span class="control-label" id="layerToggleLabel">Street</span>
+                    </div>
+
+                    <!-- Calendar Icon -->
+                    <div class="control-item" id="calendarToggle" onclick="toggleCalendarPanel()" title="Select Date Range">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        <span class="control-label">Date</span>
+                    </div>
+
+                    <!-- Date Display -->
+                    <div class="control-item date-display" id="acquisitionDate">
+                        <span id="dateLabel">No data</span>
+                    </div>
                 </div>
 
-                <!-- Map Overlay - Bottom Right (Map Tools) -->
-                <div class="map-overlay-right">
-                    <div class="overlay-title">Map Tools</div>
-                    <div class="map-tools-content">
-
-                        <!-- Base Layer Selection (Street/Satellite) -->
-                        <div style="margin-bottom: 12px;">
-                            <label style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: block;">Base Layer</label>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="layer-tab-compact active" id="streetTab" onclick="switchBaseLayer('street')" style="flex: 1;">
-                                    Street
-                                </button>
-                                <button class="layer-tab-compact" id="satelliteTab" onclick="switchBaseLayer('satellite')" style="flex: 1;">
-                                    Satellite
-                                </button>
-                            </div>
+                <!-- Calendar Panel (Hidden by default) -->
+                <div class="calendar-panel" id="calendarPanel" style="display: none;">
+                    <div class="calendar-header">
+                        <h4>Select Date Range</h4>
+                        <button class="close-calendar" onclick="toggleCalendarPanel()">×</button>
+                    </div>
+                    <div class="calendar-content">
+                        <div class="date-input-group">
+                            <label>Start Date</label>
+                            <input type="date" id="startDate" />
                         </div>
-
-                        <!-- Layer Controls (Base Map / NDVI Layer) -->
-                        <div class="layer-controls-compact" id="layerControls" style="display: none;">
-                            <label style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: block;">Data Layer</label>
-                            <div class="layer-tabs-compact">
-                                <button class="layer-tab-compact active" id="baseMapTab" onclick="switchLayer('base')">
-                                    Base Map
-                                </button>
-                                <button class="layer-tab-compact" id="ndviTab" onclick="switchLayer('ndvi')">
-                                    NDVI
-                                </button>
-                            </div>
+                        <div class="date-input-group">
+                            <label>End Date</label>
+                            <input type="date" id="endDate" />
                         </div>
-
-                        <!-- Temporary Calculate Button -->
-                        <button class="btn-calculate" id="calculateBtnMap" disabled style="margin-top: 12px; padding: 10px; font-size: 11px;">
-                            Calculate NDVI
+                        <button class="btn-calculate" id="calculateBtnMap" disabled onclick="calculateNDVI()">
+                            Calculate
                         </button>
                     </div>
                 </div>
 
+                <!-- Bottom Right Controls - Index Selector -->
+                <div class="map-controls-right">
+                    <div class="index-selector" id="indexSelector">
+                        <div class="index-selector-header" onclick="toggleIndexDropdown()">
+                            <div class="index-info">
+                                <span class="index-name" id="currentIndexName">NDVI</span>
+                                <span class="index-description">Normalized Difference Vegetation Index</span>
+                            </div>
+                            <svg class="dropdown-arrow" id="indexDropdownArrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+
+                        <div class="index-dropdown" id="indexDropdown" style="display: none;">
+                            <div class="index-option" data-index="ndvi" onclick="selectIndex('ndvi')">
+                                <span class="index-option-name">NDVI</span>
+                                <span class="index-option-desc">Normalized Difference Vegetation Index</span>
+                            </div>
+                            <div class="index-option" data-index="ndre" onclick="selectIndex('ndre')">
+                                <span class="index-option-name">NDRE</span>
+                                <span class="index-option-desc">Normalized Difference Red Edge</span>
+                            </div>
+                            <div class="index-option" data-index="msavi" onclick="selectIndex('msavi')">
+                                <span class="index-option-name">MSAVI</span>
+                                <span class="index-option-desc">Modified Soil Adjusted Vegetation Index</span>
+                            </div>
+                            <div class="index-option" data-index="reci" onclick="selectIndex('reci')">
+                                <span class="index-option-name">RECI</span>
+                                <span class="index-option-desc">Red Edge Chlorophyll Index</span>
+                            </div>
+                            <div class="index-option" data-index="ndmi" onclick="selectIndex('ndmi')">
+                                <span class="index-option-name">NDMI</span>
+                                <span class="index-option-desc">Normalized Difference Moisture Index</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
                 <!-- Hover Info Card -->
                 <div class="map-hover-card" id="mapHoverCard" style="display: none;">
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; text-align: center; letter-spacing: 0.5px;">NDVI Value</div>
                     <div class="hover-ndvi-value" id="hoverNdvi">-</div>
                     <div class="hover-coords" id="hoverCoords">-</div>
                 </div>
+
             </div>
 
             <!-- Hidden Sections (to be used later) -->
             <div style="display: none;">
-                <input type="date" id="startDate" />
-                <input type="date" id="endDate" />
                 <button id="calculateBtn" disabled>Calculate NDVI</button>
                 <div id="statusMessage"></div>
                 <div id="meanNdvi">-</div>
@@ -238,7 +322,7 @@
             initializeMap();
         }, 100);
 
-        let map, currentBaseLayer, drawnItems, ndviOverlayLayer, ndviData, ndviBounds, currentLayer, currentPolygon;
+        let map, currentBaseLayer, drawnItems, ndviOverlayLayer, ndviData, ndviBounds, currentLayer, currentPolygon, streetLayer, satelliteLayer;
 
         function initializeMap() {
             // Initialize map with zoom constraints
@@ -254,14 +338,14 @@
             console.log('Map initialized:', map);
 
             // Define base layers
-            const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18,
-            maxNativeZoom: 19,
-            errorTileUrl: '',
-        });
+            streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18,
+                maxNativeZoom: 19,
+                errorTileUrl: '',
+            });
 
-            const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri',
                 maxZoom: 18,
                 maxNativeZoom: 19,
@@ -314,25 +398,110 @@
                 position: 'topleft'
             }).addTo(map);
 
-            // Add drawing controls
+            // Add drawing controls (draw and remove only, edit in top bar)
             const drawControl = new L.Control.Draw({
-            draw: {
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true
+                draw: {
+                    polygon: {
+                        allowIntersection: false,
+                        showArea: true,
+                        shapeOptions: {
+                            color: '#3388ff',
+                            weight: 3
+                        },
+                        repeatMode: false // Don't stay in drawing mode after completing
+                    },
+                    polyline: false,
+                    rectangle: false,
+                    circle: false,
+                    marker: false,
+                    circlemarker: false
                 },
-                polyline: false,
-                rectangle: true,
-                circle: false,
-                marker: false,
-                circlemarker: false
-            },
-            edit: {
-                featureGroup: drawnItems,
-                remove: true
-            }
+                edit: {
+                    featureGroup: drawnItems,
+                    edit: false,
+                    remove: true
+                }
             });
             map.addControl(drawControl);
+
+            // Store the current drawing handler
+            let currentDrawHandler = null;
+
+            // Track when drawing starts
+            map.on('draw:drawstart', function(e) {
+                currentDrawHandler = e.handler;
+            });
+
+            // Properly complete polygon and exit drawing mode
+            map.on('draw:created', function(e) {
+                // Disable the current drawing handler if it exists
+                if (currentDrawHandler) {
+                    currentDrawHandler.disable();
+                }
+
+                // Reset the drawing handler
+                currentDrawHandler = null;
+
+                // Immediately remove drawing artifacts
+                const removeDrawingArtifacts = function() {
+                    const drawingElements = document.querySelectorAll('.leaflet-draw-tooltip, .leaflet-mouse-marker, path.leaflet-interactive[stroke-dasharray]');
+                    drawingElements.forEach(el => {
+                        if (el && el.parentNode) {
+                            el.parentNode.removeChild(el);
+                        }
+                    });
+                };
+
+                // Remove immediately and after a short delay to catch any stragglers
+                removeDrawingArtifacts();
+                setTimeout(removeDrawingArtifacts, 50);
+                setTimeout(removeDrawingArtifacts, 150);
+            });
+
+            // Exit drawing mode when polygon is completed
+            map.on('draw:drawstop', function(e) {
+                if (currentDrawHandler) {
+                    currentDrawHandler.disable();
+                }
+                currentDrawHandler = null;
+
+                // Clean up one more time
+                setTimeout(function() {
+                    const drawingElements = document.querySelectorAll('.leaflet-draw-tooltip, .leaflet-mouse-marker');
+                    drawingElements.forEach(el => {
+                        if (el && el.parentNode) {
+                            el.parentNode.removeChild(el);
+                        }
+                    });
+                }, 100);
+            });
+
+            // Add split view button below draw controls
+            const SplitViewControl = L.Control.extend({
+                options: {
+                    position: 'topleft'
+                },
+                onAdd: function(map) {
+                    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control split-view-control');
+                    const button = L.DomUtil.create('a', 'split-view-button', container);
+                    button.href = '#';
+                    button.title = 'Toggle split view';
+                    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#283618" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="12" y1="3" x2="12" y2="21"></line>
+                    </svg>`;
+
+                    L.DomEvent.on(button, 'click', function(e) {
+                        L.DomEvent.preventDefault(e);
+                        button.classList.toggle('active');
+                        toggleSplitScreen();
+                    });
+
+                    return container;
+                }
+            });
+
+            map.addControl(new SplitViewControl());
 
             // Store current polygon
             currentPolygon = null;
@@ -358,32 +527,241 @@
             burgerIcon.classList.toggle('active');
         }
 
+        // Field dropdown toggle
+        function toggleFieldDropdown() {
+            const dropdown = document.getElementById('fieldDropdown');
+            const selector = document.querySelector('.field-selector');
+            dropdown.classList.toggle('show');
+            selector.classList.toggle('active');
+        }
+
+        // Select field from dropdown
+        function selectField(name, type, area) {
+            document.getElementById('fieldName').textContent = name;
+            document.getElementById('fieldLocationSmall').textContent = type;
+            document.getElementById('fieldArea').textContent = area + ' ha';
+
+            // Update active state
+            const items = document.querySelectorAll('.field-dropdown-item');
+            items.forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Close dropdown
+            toggleFieldDropdown();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const fieldSelector = document.querySelector('.field-selector');
+            const dropdown = document.getElementById('fieldDropdown');
+            if (fieldSelector && !fieldSelector.contains(event.target)) {
+                dropdown.classList.remove('show');
+                fieldSelector.classList.remove('active');
+            }
+        });
+
+        // Enable edit mode for polygon
+        function enableEditMode() {
+            if (!currentPolygon || drawnItems.getLayers().length === 0) {
+                showStatus('Please draw a polygon first before editing!', 'error');
+                return;
+            }
+
+            // Get the first layer (our polygon)
+            const layer = drawnItems.getLayers()[0];
+
+            if (layer) {
+                // Enable edit mode
+                layer.editing.enable();
+
+                // Highlight the edit button
+                const editBtn = document.getElementById('editFieldBtn');
+                editBtn.classList.add('editing');
+
+                showStatus('Edit mode enabled! Drag the vertices to modify the polygon. Click "Save" when done.', 'info');
+
+                // Add save button if not exists
+                if (!document.getElementById('saveEditBtn')) {
+                    const saveBtn = document.createElement('button');
+                    saveBtn.id = 'saveEditBtn';
+                    saveBtn.className = 'edit-field-btn save-edit';
+                    saveBtn.title = 'Save changes';
+                    saveBtn.onclick = saveEdit;
+                    saveBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+                    editBtn.parentNode.insertBefore(saveBtn, editBtn.nextSibling);
+                }
+            }
+        }
+
+        // Save edit mode
+        function saveEdit() {
+            const layer = drawnItems.getLayers()[0];
+            if (layer) {
+                // Disable edit mode
+                layer.editing.disable();
+
+                // Update the polygon coordinates
+                currentPolygon = layer.toGeoJSON().geometry.coordinates[0];
+
+                // Update field area
+                const area = (L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]) / 10000).toFixed(2);
+                document.getElementById('fieldArea').textContent = area + ' ha';
+
+                // Update field location (center of polygon)
+                const center = layer.getBounds().getCenter();
+
+                // Update coordinates tooltip
+                addCoordinatesToPolygon(layer);
+
+                // Remove highlight from edit button
+                const editBtn = document.getElementById('editFieldBtn');
+                editBtn.classList.remove('editing');
+
+                // Remove save button
+                const saveBtn = document.getElementById('saveEditBtn');
+                if (saveBtn) {
+                    saveBtn.remove();
+                }
+
+                // Clear NDVI layer if it exists (needs recalculation)
+                if (ndviOverlayLayer) {
+                    map.removeLayer(ndviOverlayLayer);
+                    ndviOverlayLayer = null;
+                    ndviData = null;
+                    ndviBounds = null;
+                    document.getElementById('mapHoverCard').style.display = 'none';
+                }
+
+                showStatus('Polygon updated! Please recalculate NDVI with the new area.', 'success');
+            }
+        }
+
+        // Toggle split screen view
+        function toggleSplitScreen() {
+            const splitBtn = document.querySelector('.split-view-button');
+
+            // TODO: Implement split screen functionality
+            // This will be used to show before/after or different time periods
+            if (splitBtn && splitBtn.classList.contains('active')) {
+                showStatus('Split screen mode activated (coming soon)', 'info');
+            } else if (splitBtn) {
+                showStatus('Split screen mode deactivated', 'info');
+            }
+        }
+
+        // Add coordinates text to polygon
+        function addCoordinatesToPolygon(layer) {
+            try {
+                const bounds = layer.getBounds();
+                const center = bounds.getCenter();
+                const lat = center.lat;
+                const lng = center.lng;
+
+                console.log('Adding coordinates to polygon:', lat, lng);
+
+                // Format coordinates
+                const latDir = lat >= 0 ? 'N' : 'S';
+                const lngDir = lng >= 0 ? 'E' : 'W';
+                const latStr = Math.abs(lat).toFixed(4) + '° ' + latDir;
+                const lngStr = Math.abs(lng).toFixed(4) + '° ' + lngDir;
+                const coordText = latStr + ' • ' + lngStr;
+
+                console.log('Formatted coordinates:', coordText);
+
+                // Store for later use
+                window.currentFieldCoordinates = coordText;
+
+                // Remove old tooltip if exists
+                if (layer._coordinatesTooltip) {
+                    layer.unbindTooltip();
+                    layer._coordinatesTooltip = null;
+                }
+
+                // Add permanent tooltip with coordinates
+                layer.bindTooltip(coordText, {
+                    permanent: true,
+                    direction: 'top',
+                    className: 'coordinates-tooltip',
+                    offset: [0, -10]
+                }).openTooltip();
+
+                // Store reference for later removal
+                layer._coordinatesTooltip = true;
+
+                // Add click handler to the tooltip for copying
+                setTimeout(function() {
+                    const tooltipElement = document.querySelector('.coordinates-tooltip');
+                    if (tooltipElement) {
+                        tooltipElement.onclick = copyCoordinates;
+                        console.log('Coordinates tooltip added successfully');
+                    }
+                }, 100);
+
+            } catch (error) {
+                console.error('Error adding coordinates:', error);
+            }
+        }
+
+        // Copy coordinates to clipboard
+        function copyCoordinates() {
+            if (window.currentFieldCoordinates) {
+                navigator.clipboard.writeText(window.currentFieldCoordinates).then(function() {
+                    showStatus('Coordinates copied: ' + window.currentFieldCoordinates, 'success');
+                }).catch(function() {
+                    showStatus('Failed to copy coordinates', 'error');
+                });
+            }
+        }
+
         function setupEventListeners() {
             // Handle polygon creation
             map.on(L.Draw.Event.CREATED, function (event) {
-            const layer = event.layer;
-            drawnItems.clearLayers();
-            drawnItems.addLayer(layer);
-            currentPolygon = layer.toGeoJSON().geometry.coordinates[0];
-            document.getElementById('calculateBtn').disabled = false;
-            document.getElementById('calculateBtnMap').disabled = false;
-            showStatus('Polygon drawn! Click "Calculate NDVI" to process.', 'info');
+                const layer = event.layer;
+                drawnItems.clearLayers();
+                drawnItems.addLayer(layer);
+                currentPolygon = layer.toGeoJSON().geometry.coordinates[0];
+                document.getElementById('calculateBtn').disabled = false;
+                document.getElementById('calculateBtnMap').disabled = false;
+                showStatus('Polygon drawn! Click "Calculate NDVI" to process.', 'info');
 
-            // Update field area
-            const area = (L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]) / 10000).toFixed(2);
-            document.getElementById('fieldArea').textContent = area + ' ha';
+                // Update field area
+                const area = (L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]) / 10000).toFixed(2);
+                document.getElementById('fieldArea').textContent = area + ' ha';
 
-            // Update field location (center of polygon)
-            const center = layer.getBounds().getCenter();
-            document.getElementById('fieldLocation').textContent =
-                center.lat.toFixed(4) + '°N, ' + center.lng.toFixed(4) + '°E';
-        });
+                // Update field location (center of polygon)
+                const center = layer.getBounds().getCenter();
+                document.getElementById('fieldLocation').textContent =
+                    center.lat.toFixed(4) + '°N, ' + center.lng.toFixed(4) + '°E';
+
+                // Add coordinates tooltip to polygon
+                console.log('About to add coordinates...');
+                addCoordinatesToPolygon(layer);
+                console.log('Coordinates added');
+
+                // Force exit drawing mode and clean up
+                setTimeout(function() {
+                    // Remove all drawing-related elements
+                    const tooltips = document.querySelectorAll('.leaflet-draw-tooltip');
+                    const guides = document.querySelectorAll('.leaflet-draw-guide-dash');
+                    tooltips.forEach(el => el.remove());
+                    guides.forEach(el => el.remove());
+
+                    // Deactivate any active drawing handlers
+                    map.fire('draw:drawstop');
+                }, 50);
+            });
 
         // Handle polygon edit
         map.on(L.Draw.Event.EDITED, function (event) {
             const layers = event.layers;
             layers.eachLayer(function (layer) {
                 currentPolygon = layer.toGeoJSON().geometry.coordinates[0];
+                // Update coordinates tooltip
+                addCoordinatesToPolygon(layer);
             });
         });
 
@@ -393,7 +771,14 @@
             document.getElementById('calculateBtn').disabled = true;
             document.getElementById('calculateBtnMap').disabled = true;
             document.getElementById('mapHoverCard').style.display = 'none';
-            document.getElementById('layerControls').style.display = 'none';
+
+            // Remove tooltips from deleted layers
+            event.layers.eachLayer(function(layer) {
+                if (layer._coordinatesTooltip) {
+                    layer.unbindTooltip();
+                    layer._coordinatesTooltip = null;
+                }
+            });
 
             ndviData = null;
             ndviBounds = null;
@@ -402,6 +787,9 @@
                 map.removeLayer(ndviOverlayLayer);
                 ndviOverlayLayer = null;
             }
+
+            // Reset date display
+            document.getElementById('dateLabel').textContent = 'No data';
 
             showStatus('Polygon deleted. Draw a new one to calculate NDVI.', 'info');
             });
@@ -416,6 +804,12 @@
 
             const startDateValue = document.getElementById('startDate').value.replace(/-/g, '');
             const endDateValue = document.getElementById('endDate').value.replace(/-/g, '');
+
+            // Close calendar panel if open
+            const calendarPanel = document.getElementById('calendarPanel');
+            if (calendarPanel.style.display !== 'none') {
+                toggleCalendarPanel();
+            }
 
             document.getElementById('calculateBtn').disabled = true;
             document.getElementById('calculateBtnMap').disabled = true;
@@ -443,9 +837,44 @@
                     document.getElementById('minNdvi').textContent = data.ndvi_stats.min.toFixed(3);
                     document.getElementById('maxNdvi').textContent = data.ndvi_stats.max.toFixed(3);
 
-                    if (data.product_info) {
-                        document.getElementById('imageDate').textContent = new Date(data.product_info.date).toLocaleDateString();
-                        document.getElementById('resolution').textContent = data.product_info.resolution || '-';
+                    // Update acquisition date display
+                    if (data.product_info && data.product_info.date) {
+                        try {
+                            document.getElementById('imageDate').textContent = data.product_info.date;
+                            document.getElementById('resolution').textContent = data.product_info.resolution || '-';
+
+                            // Parse date - expecting format like "2024-01-10" or "20240110"
+                            let dateStr = data.product_info.date;
+                            let dateObj;
+
+                            // Try to parse different date formats
+                            if (dateStr.includes('-')) {
+                                // Format: 2024-01-10
+                                dateObj = new Date(dateStr);
+                            } else if (dateStr.length === 8) {
+                                // Format: 20240110
+                                const year = dateStr.substring(0, 4);
+                                const month = dateStr.substring(4, 6);
+                                const day = dateStr.substring(6, 8);
+                                dateObj = new Date(`${year}-${month}-${day}`);
+                            } else {
+                                dateObj = new Date(dateStr);
+                            }
+
+                            if (!isNaN(dateObj.getTime())) {
+                                const day = dateObj.getDate();
+                                const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
+                                document.getElementById('dateLabel').textContent = `${day} ${month}`;
+                            } else {
+                                console.error('Invalid date:', dateStr);
+                                document.getElementById('dateLabel').textContent = 'Date N/A';
+                            }
+                        } catch (error) {
+                            console.error('Error parsing date:', error);
+                            document.getElementById('dateLabel').textContent = 'Date N/A';
+                        }
+                    } else {
+                        document.getElementById('dateLabel').textContent = 'No data';
                     }
 
                     // Create NDVI overlay
@@ -461,12 +890,12 @@
                         const overlayImageUrl = 'data:image/png;base64,' + data.ndvi_overlay;
 
                         ndviOverlayLayer = L.imageOverlay(overlayImageUrl, bounds, {
-                            opacity: 0.85,
+                            opacity: 1.0,
                             interactive: true
-                        });
+                        }).addTo(map);
 
-                        document.getElementById('layerControls').style.display = 'block';
-                        switchLayer('ndvi');
+                        // Update polygon style and enable hover functionality
+                        updatePolygonStyleForNDVI();
                         map.fitBounds(bounds);
                     }
 
@@ -480,102 +909,128 @@
             } finally {
                 document.getElementById('calculateBtn').disabled = false;
                 document.getElementById('calculateBtnMap').disabled = false;
-                document.getElementById('calculateBtnMap').textContent = 'Calculate NDVI';
+                document.getElementById('calculateBtnMap').textContent = 'Calculate';
             }
         }
 
-        // Attach click handlers
+        // Attach click handler for hidden button
         document.getElementById('calculateBtn').addEventListener('click', calculateNDVI);
-        document.getElementById('calculateBtnMap').addEventListener('click', calculateNDVI);
+
+        // Set default dates (last 30 days)
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+
+        document.getElementById('endDate').valueAsDate = today;
+        document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
 
         function showStatus(message, type) {
             const statusDiv = document.getElementById('statusMessage');
             statusDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         }
 
-        // Base layer switching
-        function switchBaseLayer(layerType) {
-            const streetTab = document.getElementById('streetTab');
-            const satelliteTab = document.getElementById('satelliteTab');
+        // Track current base layer type
+        let currentBaseLayerType = 'street';
+
+        // Base layer toggle
+        function toggleBaseLayer() {
+            const label = document.getElementById('layerToggleLabel');
 
             map.removeLayer(currentBaseLayer);
 
-            if (layerType === 'street') {
-                currentBaseLayer = streetLayer;
-                streetTab.classList.add('active');
-                satelliteTab.classList.remove('active');
-            } else if (layerType === 'satellite') {
+            if (currentBaseLayerType === 'street') {
                 currentBaseLayer = satelliteLayer;
-                streetTab.classList.remove('active');
-                satelliteTab.classList.add('active');
+                currentBaseLayerType = 'satellite';
+                label.textContent = 'Satellite';
+            } else {
+                currentBaseLayer = streetLayer;
+                currentBaseLayerType = 'street';
+                label.textContent = 'Street';
             }
 
             currentBaseLayer.addTo(map);
         }
 
-        // Layer switching
-        function switchLayer(layer) {
-            const baseMapTab = document.getElementById('baseMapTab');
-            const ndviTab = document.getElementById('ndviTab');
+        // Calendar panel toggle
+        function toggleCalendarPanel() {
+            const panel = document.getElementById('calendarPanel');
+            const toggle = document.getElementById('calendarToggle');
 
-            currentLayer = layer;
-
-            if (layer === 'base') {
-                if (ndviOverlayLayer) {
-                    map.removeLayer(ndviOverlayLayer);
-                }
-
-                document.getElementById('mapHoverCard').style.display = 'none';
-
-                drawnItems.eachLayer(function (layer) {
-                    if (layer.setStyle) {
-                        layer.setStyle({
-                            fillOpacity: 0.2,
-                            color: '#3388ff',
-                            weight: 3
-                        });
-                    }
-                });
-
-                baseMapTab.classList.add('active');
-                ndviTab.classList.remove('active');
-            } else if (layer === 'ndvi') {
-                if (ndviOverlayLayer) {
-                    map.addLayer(ndviOverlayLayer);
-                }
-
-                drawnItems.eachLayer(function (layer) {
-                    if (layer.setStyle) {
-                        layer.setStyle({
-                            fillOpacity: 0,
-                            color: '#ff0000',
-                            weight: 2,
-                            dashArray: '5, 5'
-                        });
-                    }
-                });
-
-                baseMapTab.classList.remove('active');
-                ndviTab.classList.add('active');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                toggle.classList.add('active');
+            } else {
+                panel.style.display = 'none';
+                toggle.classList.remove('active');
             }
         }
 
-        // Opacity slider
-        document.addEventListener('DOMContentLoaded', function () {
-            const opacitySlider = document.getElementById('opacitySlider');
-            const opacityValue = document.getElementById('opacityValue');
+        // Index dropdown toggle
+        function toggleIndexDropdown() {
+            const dropdown = document.getElementById('indexDropdown');
+            const arrow = document.getElementById('indexDropdownArrow');
+            const selector = document.getElementById('indexSelector');
 
-            if (opacitySlider) {
-                opacitySlider.addEventListener('input', function () {
-                    const opacity = this.value / 100;
-                    opacityValue.textContent = this.value;
-
-                    if (ndviOverlayLayer) {
-                        ndviOverlayLayer.setOpacity(opacity);
-                    }
-                });
+            if (dropdown.style.display === 'none') {
+                dropdown.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+                selector.classList.add('expanded');
+            } else {
+                dropdown.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+                selector.classList.remove('expanded');
             }
-        });
+        }
+
+        // Select vegetation index
+        const indexDescriptions = {
+            'ndvi': 'Normalized Difference Vegetation Index',
+            'ndre': 'Normalized Difference Red Edge',
+            'msavi': 'Modified Soil Adjusted Vegetation Index',
+            'reci': 'Red Edge Chlorophyll Index',
+            'ndmi': 'Normalized Difference Moisture Index'
+        };
+
+        let currentSelectedIndex = 'ndvi';
+
+        function selectIndex(index) {
+            currentSelectedIndex = index;
+            const indexName = document.getElementById('currentIndexName');
+            const indexDesc = document.getElementById('index-description');
+            const dataLayerLabel = document.getElementById('dataLayerLabel');
+
+            indexName.textContent = index.toUpperCase();
+            document.querySelector('.index-description').textContent = indexDescriptions[index];
+            dataLayerLabel.textContent = index.toUpperCase();
+
+            // Close dropdown
+            toggleIndexDropdown();
+
+            // Update active state in dropdown
+            document.querySelectorAll('.index-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            document.querySelector(`.index-option[data-index="${index}"]`).classList.add('active');
+
+            showStatus(`Selected index: ${index.toUpperCase()}`, 'info');
+        }
+
+        // Update polygon style when NDVI is displayed
+        function updatePolygonStyleForNDVI() {
+            currentLayer = 'ndvi';
+
+            // Change polygon to red dashed border
+            drawnItems.eachLayer(function (layer) {
+                if (layer.setStyle) {
+                    layer.setStyle({
+                        fillOpacity: 0,
+                        color: '#ff0000',
+                        weight: 2,
+                        dashArray: '5, 5'
+                    });
+                }
+            });
+        }
 
         // Hover functionality
         map.on('mousemove', function (e) {
