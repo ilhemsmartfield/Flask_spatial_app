@@ -12,6 +12,9 @@
     <!-- Leaflet Draw CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
 
+    <!-- Leaflet Control Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
+
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
@@ -87,18 +90,22 @@
 
             <!-- NDVI Legend Card -->
             <div class="map-legend-card" id="mapLegendCard" style="display: none;">
-                <h4>🌱 NDVI Scale</h4>
+                <h4>🌱 NDVI Scale (0-1)</h4>
                 <div class="legend-gradient"></div>
                 <div class="legend-labels">
-                    <span>-1.0</span>
                     <span>0.0</span>
+                    <span>0.2</span>
+                    <span>0.4</span>
+                    <span>0.6</span>
+                    <span>0.8</span>
                     <span>1.0</span>
                 </div>
                 <div class="legend-info">
-                    <div>🟢 0.6-1.0: Dense vegetation</div>
-                    <div>🟡 0.2-0.6: Moderate vegetation</div>
-                    <div>🟠 0.0-0.2: Sparse vegetation</div>
-                    <div>🔴 &lt;0.0: Water/Snow</div>
+                    <div>🟢 0.8-1.0: Dense vegetation</div>
+                    <div>🟢 0.6-0.8: Healthy vegetation</div>
+                    <div>🟡 0.4-0.6: Moderate vegetation</div>
+                    <div>🟠 0.2-0.4: Sparse vegetation</div>
+                    <div>🟠 0.0-0.2: Bare soil/water</div>
                 </div>
             </div>
 
@@ -148,20 +155,31 @@
     <!-- Leaflet Draw JS -->
     <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 
+    <!-- Leaflet Control Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
+
     <script>
-        // Initialize map
-        const map = L.map('map').setView([20, 0], 2);
+        // Initialize map with zoom constraints
+        const map = L.map('map', {
+            center: [20, 0],
+            zoom: 2,
+            minZoom: 2,
+            maxZoom: 18,  // Limit to 18 to ensure tiles are available
+            zoomControl: false  // Disable default zoom control, we'll add it after search
+        });
 
         // Define base layers
         const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19,
+            maxZoom: 18,
+            maxNativeZoom: 19,  // Tiles available up to zoom 19
             errorTileUrl: '',  // Avoid showing broken tile images
         });
 
         const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-            maxZoom: 19,
+            maxZoom: 18,
+            maxNativeZoom: 19,  // Tiles available up to zoom 19
             errorTileUrl: '',  // Avoid showing broken tile images
         });
 
@@ -195,7 +213,33 @@
         let ndviBounds = null;
         let currentLayer = 'base';  // Track current layer view
 
-        // Add drawing controls
+        // Add search/geocoder control FIRST (at the very top)
+        const geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false,
+            position: 'topleft',
+            placeholder: 'Search for a place...',
+            errorMessage: 'Location not found',
+            collapsed: false,  // Keep search bar expanded
+            geocoder: L.Control.Geocoder.nominatim()
+        })
+        .on('markgeocode', function(e) {
+            const bbox = e.geocode.bbox;
+            const poly = L.polygon([
+                [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
+                [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
+                [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
+                [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
+            ]);
+            map.fitBounds(poly.getBounds());
+        })
+        .addTo(map);
+
+        // Add zoom control AFTER search (below search bar)
+        L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+
+        // Add drawing controls LAST (below zoom)
         const drawControl = new L.Control.Draw({
             draw: {
                 polygon: {

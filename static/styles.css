@@ -432,7 +432,7 @@ body {
 
 .legend-gradient {
     height: 20px;
-    background: linear-gradient(to right, #d73027, #fee08b, #1a9850);
+    background: linear-gradient(to right, #FF8C00, #FFD700, #ADFF2F, #32CD32, #228B22);
     border-radius: 4px;
     border: 1px solid #ccc;
     margin-bottom: 5px;
@@ -441,9 +441,10 @@ body {
 .legend-labels {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 9px;
     color: #666;
     margin-bottom: 10px;
+    font-weight: 600;
 }
 
 .legend-info {
@@ -480,4 +481,67 @@ body {
     font-size: 10px;
     color: #666;
     font-family: monospace;
+}
+
+/* Geocoder Search Bar Styling */
+.leaflet-control-geocoder {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    border: none;
+}
+
+.leaflet-control-geocoder-form input {
+    width: 250px;
+    padding: 10px 15px;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.leaflet-control-geocoder-form input:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.leaflet-control-geocoder-form button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.leaflet-control-geocoder-form button:hover {
+    transform: scale(1.05);
+}
+
+.leaflet-control-geocoder-alternatives {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-top: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.leaflet-control-geocoder-alternatives a {
+    padding: 10px 15px;
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.leaflet-control-geocoder-alternatives a:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+}
+
+.leaflet-control-geocoder-alternatives a:last-child {
+    border-bottom: none;
 }

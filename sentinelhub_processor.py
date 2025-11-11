@@ -218,26 +218,37 @@ def create_ndvi_visualization(ndvi_array, title='NDVI Visualization', polygon_ma
     if polygon_mask is not None:
         ndvi_masked[~polygon_mask] = np.nan
 
+    # Normalize NDVI from [-1, 1] to [0, 1] for better visualization
+    ndvi_normalized = (ndvi_masked + 1) / 2  # Maps -1→0, 0→0.5, 1→1
+
     fig, ax = plt.subplots(figsize=(10, 8))
 
-    # Create the NDVI plot with RdYlGn colormap (red-yellow-green)
-    im = ax.imshow(ndvi_masked, cmap='RdYlGn', vmin=-1, vmax=1, interpolation='bilinear')
+    # Create custom colormap: orange → yellow → green
+    from matplotlib.colors import LinearSegmentedColormap
+    colors = ['#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#228B22']  # Orange → Yellow → Light Green → Green → Dark Green
+    n_bins = 100
+    cmap_custom = LinearSegmentedColormap.from_list('ndvi_custom', colors, N=n_bins)
 
-    # Add colorbar
+    # Create the NDVI plot with custom colormap (0 to 1 scale)
+    im = ax.imshow(ndvi_normalized, cmap=cmap_custom, vmin=0, vmax=1, interpolation='bilinear')
+
+    # Add colorbar with intervals
     cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label('NDVI', rotation=270, labelpad=20, fontsize=12)
+    cbar.set_label('NDVI (0-1 Scale)', rotation=270, labelpad=20, fontsize=12)
+    cbar.set_ticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
 
     # Set title
     ax.set_title(title, fontsize=14, fontweight='bold')
     ax.axis('off')
 
-    # Add NDVI interpretation legend
+    # Add NDVI interpretation legend with new scale
     interpretation = (
-        'NDVI Interpretation:\n'
-        '0.6 - 1.0: Dense vegetation\n'
-        '0.2 - 0.6: Moderate vegetation\n'
-        '0.0 - 0.2: Sparse vegetation\n'
-        '< 0.0: Water/Snow'
+        'NDVI Scale (0-1):\n'
+        '0.8 - 1.0: Dense vegetation\n'
+        '0.6 - 0.8: Healthy vegetation\n'
+        '0.4 - 0.6: Moderate vegetation\n'
+        '0.2 - 0.4: Sparse vegetation\n'
+        '0.0 - 0.2: Bare soil/water'
     )
     ax.text(0.02, 0.98, interpretation, transform=ax.transAxes,
             fontsize=9, verticalalignment='top',
@@ -276,15 +287,20 @@ def create_ndvi_overlay_image(ndvi_array, polygon_mask=None):
     if polygon_mask is not None:
         ndvi_masked[~polygon_mask] = np.nan
 
+    # Normalize NDVI from [-1, 1] to [0, 1] for consistent visualization
+    ndvi_normalized = (ndvi_masked + 1) / 2  # Maps -1→0, 0→0.5, 1→1
+
     # Get dimensions
     height, width = ndvi_array.shape
 
-    # Create colormap and normalize
-    cmap = plt.cm.RdYlGn
-    norm = mcolors.Normalize(vmin=-1, vmax=1)
+    # Create custom colormap: orange → yellow → green (same as visualization)
+    from matplotlib.colors import LinearSegmentedColormap
+    colors = ['#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#228B22']
+    cmap = LinearSegmentedColormap.from_list('ndvi_custom', colors, N=100)
+    norm = mcolors.Normalize(vmin=0, vmax=1)
 
     # Apply colormap to get RGBA array (values 0-1)
-    rgba_float = cmap(norm(ndvi_masked))
+    rgba_float = cmap(norm(ndvi_normalized))
 
     # Convert to 0-255 range
     rgba_array = (rgba_float * 255).astype(np.uint8)
