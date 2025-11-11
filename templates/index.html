@@ -20,133 +20,206 @@
 </head>
 
 <body>
-    <div class="header">
-        <h1>NDVI Calculator with Sentinel-2</h1>
-        <p>Draw zones on the map to calculate vegetation index</p>
+    <!-- Main Layout Container -->
+    <div class="app-container">
+
+        <!-- Vertical Sidebar (Full Height) -->
+        <div class="vertical-sidebar" id="verticalSidebar">
+
+            <!-- Burger Menu Toggle -->
+            <div class="sidebar-toggle" onclick="toggleSidebar()">
+                <div class="burger-icon" id="burgerIcon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <!-- Sidebar Icons -->
+            <div class="sidebar-icons">
+                <!-- Layers Icon (Top) -->
+                <div class="sidebar-icon-item" title="Layers">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+
+                <!-- Notification Icon -->
+                <div class="sidebar-icon-item sidebar-bottom-group" title="Notifications">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </div>
+
+                <!-- Contact/Email Icon -->
+                <div class="sidebar-icon-item" title="Contact Us">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+
+                <!-- Help/Question Icon -->
+                <div class="sidebar-icon-item" title="How to Use">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+
+                <!-- Profile Icon (Bottom) -->
+                <div class="sidebar-icon-item" title="Profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+
+            <!-- Green Bar - Field Information -->
+            <div class="field-info-bar">
+                <div class="field-info-item">
+                    <span class="field-label">Field Name:</span>
+                    <span class="field-value" id="fieldName">Field #1</span>
+                </div>
+                <div class="field-info-item">
+                    <span class="field-label">Area:</span>
+                    <span class="field-value" id="fieldArea">-- ha</span>
+                </div>
+                <div class="field-info-item">
+                    <span class="field-label">Location:</span>
+                    <span class="field-value" id="fieldLocation">--°N, --°E</span>
+                </div>
+                <div class="field-info-item">
+                    <span class="field-label">Crop Type:</span>
+                    <span class="field-value" id="cropType">Not specified</span>
+                </div>
+            </div>
+
+            <!-- Main Content Area (Map Only) -->
+            <div class="content-wrapper">
+
+            <!-- Map Container (Full Width) -->
+            <div class="map-section">
+                <div id="map"></div>
+
+                <!-- Map Overlay - Bottom Left (Search + Zoom) -->
+                <div class="map-overlay-left">
+                    <div class="overlay-title">Navigation</div>
+                    <!-- Search and zoom controls will be positioned here via JS -->
+                </div>
+
+                <!-- Map Overlay - Bottom Right (Map Tools) -->
+                <div class="map-overlay-right">
+                    <div class="overlay-title">Map Tools</div>
+                    <div class="map-tools-content">
+
+                        <!-- Base Layer Selection (Street/Satellite) -->
+                        <div style="margin-bottom: 12px;">
+                            <label style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: block;">Base Layer</label>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="layer-tab-compact active" id="streetTab" onclick="switchBaseLayer('street')" style="flex: 1;">
+                                    Street
+                                </button>
+                                <button class="layer-tab-compact" id="satelliteTab" onclick="switchBaseLayer('satellite')" style="flex: 1;">
+                                    Satellite
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Layer Controls (Base Map / NDVI Layer) -->
+                        <div class="layer-controls-compact" id="layerControls" style="display: none;">
+                            <label style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: block;">Data Layer</label>
+                            <div class="layer-tabs-compact">
+                                <button class="layer-tab-compact active" id="baseMapTab" onclick="switchLayer('base')">
+                                    Base Map
+                                </button>
+                                <button class="layer-tab-compact" id="ndviTab" onclick="switchLayer('ndvi')">
+                                    NDVI
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Temporary Calculate Button -->
+                        <button class="btn-calculate" id="calculateBtnMap" disabled style="margin-top: 12px; padding: 10px; font-size: 11px;">
+                            Calculate NDVI
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hover Info Card -->
+                <div class="map-hover-card" id="mapHoverCard" style="display: none;">
+                    <div class="hover-ndvi-value" id="hoverNdvi">-</div>
+                    <div class="hover-coords" id="hoverCoords">-</div>
+                </div>
+            </div>
+
+            <!-- Hidden Sections (to be used later) -->
+            <div style="display: none;">
+                <input type="date" id="startDate" />
+                <input type="date" id="endDate" />
+                <button id="calculateBtn" disabled>Calculate NDVI</button>
+                <div id="statusMessage"></div>
+                <div id="meanNdvi">-</div>
+                <div id="minNdvi">-</div>
+                <div id="maxNdvi">-</div>
+                <div id="imageDate">-</div>
+                <div id="resolution">-</div>
+                <input type="range" id="opacitySlider" min="0" max="100" value="85">
+                <span id="opacityValue">85</span>
+            </div>
+
+        </div>
+
+        <!-- Bottom 3-Panel Section -->
+        <div class="bottom-panels">
+
+            <!-- Orange Panel - Rotation -->
+            <div class="panel-section panel-orange">
+                <div class="panel-header">
+                    <h3>Rotation</h3>
+                </div>
+                <div class="panel-content">
+                    <p class="panel-placeholder">Crop rotation information will be displayed here</p>
+                </div>
+            </div>
+
+            <!-- Yellow Panel - Graphs -->
+            <div class="panel-section panel-yellow">
+                <div class="panel-header">
+                    <h3>Graphs</h3>
+                </div>
+                <div class="panel-content">
+                    <p class="panel-subtitle">Stades de croissance</p>
+                    <p class="panel-placeholder">Growth stages chart will be displayed here</p>
+                </div>
+            </div>
+
+            <!-- Red Panel - Index Explanation -->
+            <div class="panel-section panel-red">
+                <div class="panel-header">
+                    <h3>Index Explanation</h3>
+                </div>
+                <div class="panel-content">
+                    <p class="panel-subtitle">Répartition des valeurs</p>
+                    <p class="panel-placeholder">Value distribution will be displayed here</p>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="container">
-        <div class="map-container">
-            <div id="map"></div>
-
-            <!-- Base Map Layer Controls (Street/Satellite) -->
-            <div class="base-layer-controls">
-                <div class="base-layer-tabs">
-                    <button class="base-layer-tab active" id="streetTab" onclick="switchBaseLayer('street')">
-                        🗺️ Street
-                    </button>
-                    <button class="base-layer-tab" id="satelliteTab" onclick="switchBaseLayer('satellite')">
-                        🛰️ Satellite
-                    </button>
-                </div>
-            </div>
-
-            <!-- Layer Controls (like Excel Sheets) -->
-            <div class="layer-controls" id="layerControls" style="display: none;">
-                <div class="layer-tabs">
-                    <button class="layer-tab active" id="baseMapTab" onclick="switchLayer('base')">
-                        📍 Base Map
-                    </button>
-                    <button class="layer-tab" id="ndviTab" onclick="switchLayer('ndvi')">
-                        🌱 NDVI Layer
-                    </button>
-                </div>
-                <div class="opacity-control" id="opacityControl">
-                    <label for="opacitySlider">NDVI Opacity: <span id="opacityValue">85</span>%</label>
-                    <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="85">
-                </div>
-            </div>
-
-            <!-- Floating Stats Card on Map -->
-            <div class="map-stats-card" id="mapStatsCard" style="display: none;">
-                <div class="stats-header">
-                    <h4>📊 NDVI Statistics</h4>
-                    <button class="stats-close-btn" onclick="toggleStatsCard()">✕</button>
-                </div>
-                <div class="stats-content">
-                    <div class="stat-row">
-                        <span class="stat-label">Mean:</span>
-                        <span class="stat-value" id="meanNdvi">-</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Min:</span>
-                        <span class="stat-value" id="minNdvi">-</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Max:</span>
-                        <span class="stat-value" id="maxNdvi">-</span>
-                    </div>
-                    <div class="stats-divider"></div>
-                    <div class="stat-row">
-                        <span class="stat-label">📅 Date:</span>
-                        <span class="stat-value" id="imageDate">-</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">📐 Resolution:</span>
-                        <span class="stat-value" id="resolution">-</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NDVI Legend Card -->
-            <div class="map-legend-card" id="mapLegendCard" style="display: none;">
-                <h4>🌱 NDVI Scale (0-1)</h4>
-                <div class="legend-gradient"></div>
-                <div class="legend-labels">
-                    <span>0.0</span>
-                    <span>0.2</span>
-                    <span>0.4</span>
-                    <span>0.6</span>
-                    <span>0.8</span>
-                    <span>1.0</span>
-                </div>
-                <div class="legend-info">
-                    <div>🟢 0.8-1.0: Dense vegetation</div>
-                    <div>🟢 0.6-0.8: Healthy vegetation</div>
-                    <div>🟡 0.4-0.6: Moderate vegetation</div>
-                    <div>🟠 0.2-0.4: Sparse vegetation</div>
-                    <div>🟠 0.0-0.2: Bare soil/water</div>
-                </div>
-            </div>
-
-            <!-- Hover Info Card -->
-            <div class="map-hover-card" id="mapHoverCard" style="display: none;">
-                <div class="hover-ndvi-value" id="hoverNdvi">-</div>
-                <div class="hover-coords" id="hoverCoords">-</div>
-            </div>
-        </div>
-
-        <div class="sidebar">
-            <div class="instructions">
-                <h4>How to use:</h4>
-                <ol>
-                    <li>Use the polygon tool to draw a zone</li>
-                    <li>Select the date range</li>
-                    <li>Click "Calculate NDVI"</li>
-                    <li>View results on the map</li>
-                </ol>
-            </div>
-
-            <div class="control-panel">
-                <h3>Controls</h3>
-
-                <div class="form-group">
-                    <label for="startDate">Start Date:</label>
-                    <input type="date" id="startDate" />
-                </div>
-
-                <div class="form-group">
-                    <label for="endDate">End Date:</label>
-                    <input type="date" id="endDate" />
-                </div>
-
-                <button class="btn" id="calculateBtn" disabled>
-                    Calculate NDVI
-                </button>
-
-                <div id="statusMessage"></div>
-            </div>
-        </div>
     </div>
 
     <!-- Leaflet JS -->
@@ -159,67 +232,69 @@
     <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
 
     <script>
-        // Initialize map with zoom constraints
-        const map = L.map('map', {
-            center: [20, 0],
-            zoom: 2,
-            minZoom: 2,
-            maxZoom: 18,  // Limit to 18 to ensure tiles are available
-            zoomControl: false  // Disable default zoom control, we'll add it after search
-        });
-
-        // Define base layers
-        const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18,
-            maxNativeZoom: 19,  // Tiles available up to zoom 19
-            errorTileUrl: '',  // Avoid showing broken tile images
-        });
-
-        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-            maxZoom: 18,
-            maxNativeZoom: 19,  // Tiles available up to zoom 19
-            errorTileUrl: '',  // Avoid showing broken tile images
-        });
-
-        // Log tile loading errors
-        streetLayer.on('tileerror', function(error, tile) {
-            console.error('Street tile loading error:', error);
-        });
-
-        satelliteLayer.on('tileerror', function(error, tile) {
-            console.error('Satellite tile loading error:', error);
-        });
-
-        // Add default layer (street map)
-        let currentBaseLayer = streetLayer;
-        currentBaseLayer.addTo(map);
-
-        // Fix map size after page load (ensures tiles load properly)
+        // Wait for map container to be ready
         setTimeout(function() {
-            map.invalidateSize();
+            console.log('Initializing map...');
+            initializeMap();
         }, 100);
 
-        // Initialize drawing layer
-        const drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
+        let map, currentBaseLayer, drawnItems, ndviOverlayLayer, ndviData, ndviBounds, currentLayer, currentPolygon;
 
-        // NDVI overlay layer (initially null)
-        let ndviOverlayLayer = null;
+        function initializeMap() {
+            // Initialize map with zoom constraints
+            map = L.map('map', {
+                center: [20, 0],
+                zoom: 2,
+                minZoom: 2,
+                maxZoom: 18,
+                zoomControl: false,
+                preferCanvas: true
+            });
 
-        // Store NDVI data for hover functionality
-        let ndviData = null;
-        let ndviBounds = null;
-        let currentLayer = 'base';  // Track current layer view
+            console.log('Map initialized:', map);
 
-        // Add search/geocoder control FIRST (at the very top)
-        const geocoder = L.Control.geocoder({
+            // Define base layers
+            const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+            maxNativeZoom: 19,
+            errorTileUrl: '',
+        });
+
+            const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri',
+                maxZoom: 18,
+                maxNativeZoom: 19,
+                errorTileUrl: '',
+            });
+
+            // Add default layer (street map)
+            currentBaseLayer = streetLayer;
+            currentBaseLayer.addTo(map);
+
+            // Fix map size
+            setTimeout(function() {
+                map.invalidateSize();
+                console.log('Map size invalidated');
+            }, 200);
+
+            // Initialize drawing layer
+            drawnItems = new L.FeatureGroup();
+            map.addLayer(drawnItems);
+
+            // NDVI overlay layer
+            ndviOverlayLayer = null;
+            ndviData = null;
+            ndviBounds = null;
+            currentLayer = 'base';
+
+            // Add search/geocoder control
+            const geocoder = L.Control.geocoder({
             defaultMarkGeocode: false,
             position: 'topleft',
             placeholder: 'Search for a place...',
             errorMessage: 'Location not found',
-            collapsed: false,  // Keep search bar expanded
+            collapsed: false,
             geocoder: L.Control.Geocoder.nominatim()
         })
         .on('markgeocode', function(e) {
@@ -231,16 +306,16 @@
                 [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
             ]);
             map.fitBounds(poly.getBounds());
-        })
-        .addTo(map);
+            })
+            .addTo(map);
 
-        // Add zoom control AFTER search (below search bar)
-        L.control.zoom({
-            position: 'topleft'
-        }).addTo(map);
+            // Add zoom control
+            L.control.zoom({
+                position: 'topleft'
+            }).addTo(map);
 
-        // Add drawing controls LAST (below zoom)
-        const drawControl = new L.Control.Draw({
+            // Add drawing controls
+            const drawControl = new L.Control.Draw({
             draw: {
                 polygon: {
                     allowIntersection: false,
@@ -256,35 +331,52 @@
                 featureGroup: drawnItems,
                 remove: true
             }
-        });
-        map.addControl(drawControl);
+            });
+            map.addControl(drawControl);
 
-        // Store current polygon
-        let currentPolygon = null;
+            // Store current polygon
+            currentPolygon = null;
 
-        // Set default dates (last 30 days)
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30);
+            // Set default dates
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 30);
 
-        document.getElementById('startDate').valueAsDate = startDate;
-        document.getElementById('endDate').valueAsDate = endDate;
+            document.getElementById('startDate').valueAsDate = startDate;
+            document.getElementById('endDate').valueAsDate = endDate;
 
-        // Handle polygon creation
-        map.on(L.Draw.Event.CREATED, function (event) {
+            setupEventListeners();
+
+            console.log('Map setup complete');
+        }
+
+        // Sidebar toggle function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('verticalSidebar');
+            const burgerIcon = document.getElementById('burgerIcon');
+            sidebar.classList.toggle('expanded');
+            burgerIcon.classList.toggle('active');
+        }
+
+        function setupEventListeners() {
+            // Handle polygon creation
+            map.on(L.Draw.Event.CREATED, function (event) {
             const layer = event.layer;
-
-            // Remove previous polygon
             drawnItems.clearLayers();
-
-            // Add new polygon
             drawnItems.addLayer(layer);
             currentPolygon = layer.toGeoJSON().geometry.coordinates[0];
-
-            // Enable calculate button
             document.getElementById('calculateBtn').disabled = false;
-
+            document.getElementById('calculateBtnMap').disabled = false;
             showStatus('Polygon drawn! Click "Calculate NDVI" to process.', 'info');
+
+            // Update field area
+            const area = (L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]) / 10000).toFixed(2);
+            document.getElementById('fieldArea').textContent = area + ' ha';
+
+            // Update field location (center of polygon)
+            const center = layer.getBounds().getCenter();
+            document.getElementById('fieldLocation').textContent =
+                center.lat.toFixed(4) + '°N, ' + center.lng.toFixed(4) + '°E';
         });
 
         // Handle polygon edit
@@ -299,26 +391,24 @@
         map.on(L.Draw.Event.DELETED, function (event) {
             currentPolygon = null;
             document.getElementById('calculateBtn').disabled = true;
-            document.getElementById('mapStatsCard').style.display = 'none';
-            document.getElementById('mapLegendCard').style.display = 'none';
+            document.getElementById('calculateBtnMap').disabled = true;
             document.getElementById('mapHoverCard').style.display = 'none';
             document.getElementById('layerControls').style.display = 'none';
 
-            // Clear NDVI data
             ndviData = null;
             ndviBounds = null;
 
-            // Remove overlay
             if (ndviOverlayLayer) {
                 map.removeLayer(ndviOverlayLayer);
                 ndviOverlayLayer = null;
             }
 
             showStatus('Polygon deleted. Draw a new one to calculate NDVI.', 'info');
-        });
+            });
+        }
 
-        // Calculate NDVI button click handler
-        document.getElementById('calculateBtn').addEventListener('click', async function () {
+        // Calculate NDVI button (works for both hidden and map buttons)
+        async function calculateNDVI() {
             if (!currentPolygon) {
                 showStatus('Please draw a polygon first!', 'error');
                 return;
@@ -327,9 +417,10 @@
             const startDateValue = document.getElementById('startDate').value.replace(/-/g, '');
             const endDateValue = document.getElementById('endDate').value.replace(/-/g, '');
 
-            // Disable button and show loading
             document.getElementById('calculateBtn').disabled = true;
-            showStatus('<div class="spinner"></div><p style="margin-top: 10px;">Processing... This may take a few minutes.</p>', 'info');
+            document.getElementById('calculateBtnMap').disabled = true;
+            document.getElementById('calculateBtnMap').innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>';
+            showStatus('<div class="spinner"></div><p style="margin-top: 10px;">Processing...</p>', 'info');
 
             try {
                 const response = await fetch('/api/calculate-ndvi', {
@@ -347,7 +438,7 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Update stats in floating card
+                    // Update hidden stats elements
                     document.getElementById('meanNdvi').textContent = data.ndvi_stats.mean.toFixed(3);
                     document.getElementById('minNdvi').textContent = data.ndvi_stats.min.toFixed(3);
                     document.getElementById('maxNdvi').textContent = data.ndvi_stats.max.toFixed(3);
@@ -357,68 +448,58 @@
                         document.getElementById('resolution').textContent = data.product_info.resolution || '-';
                     }
 
-                    // Show floating stats card on map
-                    document.getElementById('mapStatsCard').style.display = 'block';
-
-                    // Show legend card
-                    document.getElementById('mapLegendCard').style.display = 'block';
-
-                    // Create NDVI overlay on map
+                    // Create NDVI overlay
                     if (data.bbox && data.bbox.length === 2) {
-                        // Remove existing overlay if present
                         if (ndviOverlayLayer) {
                             map.removeLayer(ndviOverlayLayer);
                         }
 
-                        // Store NDVI data for hover functionality
                         ndviData = data.ndvi_array;
                         const bounds = L.latLngBounds(data.bbox[0], data.bbox[1]);
                         ndviBounds = bounds;
 
-                        // Create new overlay with the clean NDVI overlay image (no legend)
                         const overlayImageUrl = 'data:image/png;base64,' + data.ndvi_overlay;
 
                         ndviOverlayLayer = L.imageOverlay(overlayImageUrl, bounds, {
                             opacity: 0.85,
-                            interactive: true  // Enable mouse events for hover
+                            interactive: true
                         });
 
-                        // Show layer controls
                         document.getElementById('layerControls').style.display = 'block';
-
-                        // Automatically switch to NDVI layer
                         switchLayer('ndvi');
-
-                        // Fit map to the NDVI bounds
                         map.fitBounds(bounds);
                     }
 
-                    showStatus('NDVI calculation completed successfully! Hover over the map to see values.', 'success');
+                    showStatus('NDVI calculation completed!', 'success');
                 } else {
-                    showStatus('Error: ' + (data.error || 'Unknown error occurred') +
+                    showStatus('Error: ' + (data.error || 'Unknown error') +
                         (data.info ? '<br><small>' + data.info + '</small>' : ''), 'error');
                 }
             } catch (error) {
                 showStatus('Error: ' + error.message, 'error');
             } finally {
                 document.getElementById('calculateBtn').disabled = false;
+                document.getElementById('calculateBtnMap').disabled = false;
+                document.getElementById('calculateBtnMap').textContent = 'Calculate NDVI';
             }
-        });
+        }
+
+        // Attach click handlers
+        document.getElementById('calculateBtn').addEventListener('click', calculateNDVI);
+        document.getElementById('calculateBtnMap').addEventListener('click', calculateNDVI);
 
         function showStatus(message, type) {
             const statusDiv = document.getElementById('statusMessage');
-            statusDiv.innerHTML = `<div class="alert alert-${type}" style="margin-top: 15px;">${message}</div>`;
+            statusDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         }
 
-        // Base layer switching function (Street/Satellite)
+        // Base layer switching
         function switchBaseLayer(layerType) {
             const streetTab = document.getElementById('streetTab');
             const satelliteTab = document.getElementById('satelliteTab');
 
-            // Remove current base layer
             map.removeLayer(currentBaseLayer);
 
-            // Switch to new layer
             if (layerType === 'street') {
                 currentBaseLayer = streetLayer;
                 streetTab.classList.add('active');
@@ -429,32 +510,27 @@
                 satelliteTab.classList.add('active');
             }
 
-            // Add new base layer
             currentBaseLayer.addTo(map);
         }
 
-        // Layer switching function (like Excel sheets)
+        // Layer switching
         function switchLayer(layer) {
             const baseMapTab = document.getElementById('baseMapTab');
             const ndviTab = document.getElementById('ndviTab');
-            const opacityControl = document.getElementById('opacityControl');
 
-            currentLayer = layer;  // Track current layer
+            currentLayer = layer;
 
             if (layer === 'base') {
-                // Show only base map
                 if (ndviOverlayLayer) {
                     map.removeLayer(ndviOverlayLayer);
                 }
 
-                // Hide hover info when on base layer
                 document.getElementById('mapHoverCard').style.display = 'none';
 
-                // Restore polygon fill on base map
                 drawnItems.eachLayer(function (layer) {
                     if (layer.setStyle) {
                         layer.setStyle({
-                            fillOpacity: 0.2,  // Restore fill
+                            fillOpacity: 0.2,
                             color: '#3388ff',
                             weight: 3
                         });
@@ -463,32 +539,28 @@
 
                 baseMapTab.classList.add('active');
                 ndviTab.classList.remove('active');
-                opacityControl.classList.remove('active');
             } else if (layer === 'ndvi') {
-                // Show NDVI overlay
                 if (ndviOverlayLayer) {
                     map.addLayer(ndviOverlayLayer);
                 }
 
-                // Make polygon transparent (only show border) on NDVI layer
                 drawnItems.eachLayer(function (layer) {
                     if (layer.setStyle) {
                         layer.setStyle({
-                            fillOpacity: 0,  // Transparent fill
-                            color: '#ff0000',  // Red border for visibility
+                            fillOpacity: 0,
+                            color: '#ff0000',
                             weight: 2,
-                            dashArray: '5, 5'  // Dotted line
+                            dashArray: '5, 5'
                         });
                     }
                 });
 
                 baseMapTab.classList.remove('active');
                 ndviTab.classList.add('active');
-                opacityControl.classList.add('active');
             }
         }
 
-        // Opacity slider control
+        // Opacity slider
         document.addEventListener('DOMContentLoaded', function () {
             const opacitySlider = document.getElementById('opacitySlider');
             const opacityValue = document.getElementById('opacityValue');
@@ -505,46 +577,37 @@
             }
         });
 
-        // Add hover functionality to display NDVI values
+        // Hover functionality
         map.on('mousemove', function (e) {
-            // Only show hover info when on NDVI layer
             if (currentLayer !== 'ndvi' || !ndviData || !ndviBounds) {
                 return;
             }
 
-            // Check if mouse is within NDVI bounds
             if (!ndviBounds.contains(e.latlng)) {
                 document.getElementById('mapHoverCard').style.display = 'none';
                 return;
             }
 
-            // Calculate pixel position in NDVI array
             const lat = e.latlng.lat;
             const lng = e.latlng.lng;
 
-            // Get bounds
             const south = ndviBounds.getSouth();
             const north = ndviBounds.getNorth();
             const west = ndviBounds.getWest();
             const east = ndviBounds.getEast();
 
-            // Calculate relative position (0 to 1)
             const relX = (lng - west) / (east - west);
             const relY = (north - lat) / (north - south);
 
-            // Get array dimensions
             const height = ndviData.length;
             const width = ndviData[0].length;
 
-            // Calculate pixel indices
             const pixelY = Math.floor(relY * height);
             const pixelX = Math.floor(relX * width);
 
-            // Check bounds
             if (pixelY >= 0 && pixelY < height && pixelX >= 0 && pixelX < width) {
                 const ndviValue = ndviData[pixelY][pixelX];
 
-                // Only show if valid NDVI value
                 if (ndviValue >= -1 && ndviValue <= 1 && ndviValue !== -999) {
                     document.getElementById('mapHoverCard').style.display = 'block';
                     document.getElementById('hoverNdvi').textContent = ndviValue.toFixed(3);
@@ -556,22 +619,12 @@
             }
         });
 
-        // Toggle stats card visibility
-        function toggleStatsCard() {
-            const statsCard = document.getElementById('mapStatsCard');
-            if (statsCard.style.display === 'none') {
-                statsCard.style.display = 'block';
-            } else {
-                statsCard.style.display = 'none';
-            }
-        }
-
-        // Check API health on load
+        // Check API health
         fetch('/api/health')
             .then(res => res.json())
             .then(data => {
                 if (!data.sentinel_configured) {
-                    showStatus('Warning: Sentinel credentials not configured. Set SENTINEL_USER and SENTINEL_PASSWORD environment variables.', 'error');
+                    showStatus('Warning: Sentinel credentials not configured.', 'error');
                 }
             })
             .catch(err => {
